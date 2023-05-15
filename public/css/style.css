@@ -1,0 +1,94 @@
+/*-------------------LOGIN---------------------*/
+#header-login{
+    background-color: #000000d7;
+}
+
+#login{
+    background-color: #000000d7;
+    border-radius: 15px;
+    padding: 20px;
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+
+#criar-conta{
+    margin-top: 15px;
+    text-align: center;
+}
+
+
+#criar-conta span{
+    font-size: 12px;
+}
+
+
+#criar-conta a{
+    background-color: green;
+    border-radius: 5px;
+    color: white;
+    padding: 4px 10px;
+    margin-left: 10px;
+    text-decoration: none;
+}
+
+
+#footer-login{
+    background-color: #000000d7;
+    font-size: 12px;
+}
+
+#footer-login a{
+    text-decoration: none;
+}
+
+
+@media(min-width:800px){
+    #login{
+        width: 35% !important;
+    }
+}
+/*-------------------LOGIN---------------------*/
+
+
+
+
+/*---------------------REGISTER----------------------*/
+#register{
+    background-color: #000000d7;
+    border-radius: 15px;
+    padding: 20px;
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+
+#fazer-login{
+    margin-top: 15px;
+    text-align: center;
+}
+
+
+#fazer-login span{
+    font-size: 12px;
+}
+
+
+#fazer-login a{
+    background-color: green;
+    border-radius: 5px;
+    color: white;
+    padding: 4px 10px;
+    margin-left: 10px;
+    text-decoration: none;
+}
+
+
+@media(min-width:800px){
+    #register{
+        width: 35% !important;
+    }
+}
+/*---------------------REGISTER----------------------*/

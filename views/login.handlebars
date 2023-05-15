@@ -1,1 +1,36 @@
-<h1>login</h1>
+<div class="d-flex flex-column justify-content-between vh-100">
+    
+    <header id="header-login" class="text-white p-2 d-flex justify-content-center algin-items-center">
+        <span>Contas</span>
+        <img class="ms-2" src="/img/grana.png">
+    </header>
+    
+    <main>
+        <div id="login">
+        
+            <h3 class="text-white fw-lighter mb-4">Fazer Login</h3>
+        
+            <form action="/fazerlogin" method="post" class="d-flex flex-column">
+                <input class="mb-2 form-control" type="text" name="user" placeholder="Usuário*" required>
+                <input class="mb-3 form-control" type="password" name="senha" placeholder="Senha*" required>
+        
+                <button type="submit" class="btn btn-secondary">LOGAR</button>
+            </form>
+
+            {{#if messages.messagee}}
+               <p class="text-danger mt-2">{{messages.messagee}}</p>
+            {{/if}}
+        </div>
+
+        <div id="criar-conta">
+             <span class="text-secondary">Não tem uma conta?</span>
+             <a href="/register">Criar conta</a>
+        </div>
+    </main>
+    
+    
+    <footer id="footer-login" class="text-center py-3 text-white">
+         © 2023 Todos os direitos reservados.Criado por <a href="http://freeladev.online" style="color: orangered">Freela Dev</a>
+    </footer>
+
+</div>
