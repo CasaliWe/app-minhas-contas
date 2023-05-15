@@ -1,3 +1,24 @@
+.btn-sair{
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 600;
+    margin-left: 12px;
+}
+
+.active-menu{
+    color: rgba(255, 255, 255, 0.619) !important;
+    text-shadow: 0px 0px 7px rgba(255, 255, 255, 0.53);
+}
+
+
+.submit-click-conta{
+    background-color: transparent;
+    width: 100%;
+    border: none;
+}
+
+
+
 /*-------------------LOGIN---------------------*/
 #header-login{
     background-color: #000000d7;
@@ -92,3 +113,69 @@
     }
 }
 /*---------------------REGISTER----------------------*/
+
+
+
+
+
+
+/*------------------------HOME----------------------*/
+#header-home{
+    background-color: #000000d7;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#header-home span{
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+#header-home a{
+    color: white;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 400ms;
+}
+
+#header-home a:hover{
+    color: rgba(255, 255, 255, 0.667);
+}
+/*------------------------HOME----------------------*/
+
+
+
+
+
+
+/*-----------------------ADICIONAR------------------------*/
+#header-adicionar{
+    background-color: #000000d7;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#header-adicionar span{
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+#header-adicionar a{
+    color: white;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 400ms;
+}
+
+#header-adicionar a:hover{
+    color: rgba(255, 255, 255, 0.667);
+}
+/*-----------------------ADICIONAR------------------------*/

@@ -17,9 +17,14 @@ router.post('/fazerlogin', ContasControllers.fazerLogin)
 //Home Inicial
 router.get('/home', ContasControllers.home)
 
+//Adicionar Conta
+router.get('/adicionar', ContasControllers.adicionar)
+
 //Sair
 router.get('/logout', ContasControllers.sair)
 
+//ADICIONAR NOVA CONTA
+router.post('/adicionarConta', ContasControllers.adicionarConta)
 
 
 

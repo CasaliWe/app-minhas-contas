@@ -22,10 +22,17 @@ const transporter = nodemailer.createTransport({
 
 
 
+const homeActive = true
+const adicionarActive = true
+
+
 module.exports = class ContasControllers {
-        static login(req,res){
+        static async login(req,res){
             if(req.session.userid){
-                res.render('home')
+                //Pega os dados do user
+                const dadosUser = await Users.findOne({include: Contas, where: {id: req.session.userid}})
+
+                res.render('home', {homeActive, dadosUser: dadosUser.get({plain: true})})
             } else{
                 res.render('login')
             }
@@ -89,15 +96,16 @@ module.exports = class ContasControllers {
         static async fazerLogin(req,res){
              const {user, senha} = req.body
 
-             const users = await Users.findAll({raw: true})
-
              const userTesteLogin = await Users.findOne({raw: true, where: {user: user}})
              const senhaTesteLogin = await Users.findOne({raw: true, where: {senha: senha}})
 
              if(userTesteLogin != null && senhaTesteLogin != null){
+                //Pega os dados do user
+                const dadosUser = await Users.findOne({include: Contas, where: {id: userTesteLogin.id}})
+
                 req.session.userid = userTesteLogin.id 
                     req.session.save(()=>{
-                    res.redirect('/home')
+                    res.render('home', {homeActive, dadosUser: dadosUser.get({plain: true})})
                 })
              }else{
                 req.flash('messagee','Usuário ou senha incorreto!') 
@@ -112,18 +120,72 @@ module.exports = class ContasControllers {
         static async home(req,res){
             if(req.session.userid){
                 //Pega os dados do user
-                const dadosUser = await Users.findOne({raw: true, where: {id: req.session.userid}})
+                const dadosUser = await Users.findOne({include: Contas, where: {id: req.session.userid}})
 
-                res.render('home')
+                res.render('home', {homeActive, dadosUser: dadosUser.get({plain: true})})
             } else{
                 res.render('login')
             }
         }
 
 
+
         //SAIR
         static sair(req,res){
             req.session.destroy()
             res.redirect('/')
+        }
+
+
+
+        //ADICIONAR
+        static async adicionar(req,res){
+            if(req.session.userid){
+                //Pega os dados do user
+                const dadosUser = await Users.findOne({raw: true, where: {id: req.session.userid}})
+
+                res.render('adicionar', {adicionarActive, dadosUser})
+            } else{
+                res.render('login')
+            }
+        }
+
+
+
+        //ADICIONAR NOVA CONTA
+        static async adicionarConta(req,res){
+             const {userId, nome, valor, parcela, vencimento, lembrete} = req.body
+             const vencendo = 'não'
+             const pago = 'não'
+
+
+             //Reorganizando a ordem da data antes de salvar no banco
+             function mudarOrdemData(data) {
+                var partes = data.split('-');
+                var ano = partes[0].slice(-2);
+                var novaData = partes[2] + '-' + partes[1] + '-' + ano;
+                return novaData;
+              }
+
+              var dataOriginal = vencimento;
+              var dataNova = mudarOrdemData(dataOriginal);
+
+
+
+            
+             const novaConta = {
+                userId,
+                nome,
+                valor,
+                parcela,
+                vencimento: dataNova,
+                lembrete,
+                vencendo,
+                pago
+             }
+
+             await Contas.create(novaConta)
+
+             res.redirect('/')
         }
 }

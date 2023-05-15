@@ -1,0 +1,72 @@
+<header id="header-adicionar">
+    <div>
+        <span>{{dadosUser.nome}}</span>
+    </div>
+
+    <div>
+        <a {{#if homeActive}} class="active-menu" {{/if}} href="/home">Contas</a> 
+        <span class="text-white mx-1" style="opacity: .3;">|</span>
+        <a {{#if adicionarActive}} class="active-menu" {{/if}} href="/adicionar">Adicionar</a>
+    </div>
+</header>
+
+
+
+<div class="mb-4">
+    <a class="btn-sair text-danger" href="/logout">Sair</a>
+</div>
+
+
+<main class="text-center pb-5">
+    <h1 class="text-success mb-5">Adicionar conta</h1>
+
+    <form action="/adicionarConta" method="post" class="d-flex flex-column">
+
+       <input type="hidden" value="{{dadosUser.id}}" name="userId">
+     
+       <input type="text" name="nome" class="form-control mb-3 w-75 mx-auto" required placeholder="Nome da conta">
+       <input type="text" name="valor" class="form-control mb-3 w-75 mx-auto" required placeholder="Valor da conta" onkeypress="return apenasNumeros(event)" oninput="formatarValor(this)">
+       <select name="parcela" class="form-control mb-3 w-75 mx-auto">
+          <option value="1x">Á vista</option>
+          <option value="2x">2x</option>
+          <option value="3x">3x</option>
+          <option value="4x">4x</option>
+          <option value="5x">5x</option>
+          <option value="6x">6x</option>
+          <option value="7x">7x</option>
+          <option value="8x">8x</option>
+          <option value="9x">9x</option>
+          <option value="10x">10x</option>
+          <option value="11x">11x</option>
+          <option value="12x">12x</option>
+          <option value="13x">13x</option>
+          <option value="14x">14x</option>
+          <option value="15x">15x</option>
+          <option value="16x">16x</option>
+          <option value="17x">17x</option>
+          <option value="18x">18x</option>
+          <option value="19x">19x</option>
+          <option value="20x">20x</option>
+          <option value="21x">21x</option>
+          <option value="22x">22x</option>
+          <option value="23x">23x</option>
+          <option value="24x">24x</option>
+       </select>
+       <input type="date" name="vencimento" class="form-control mb-3 w-75 mx-auto" required placeholder="Vencimento">
+       <select name="lembrete" class="form-control mb-3 w-75 mx-auto">
+           <option value="1">1 dia antes</option>
+           <option value="3">3 dias antes</option>
+           <option value="5">5 dias antes</option>
+       </select>
+
+
+       <button type="submit" class="btn btn-success w-50 mt-3 mx-auto">Salvar Conta</button>
+
+    </form>
+</main>
+
+
+
+<footer id="footer-login" class="text-center py-3 text-white mt-5">
+    © 2023 Todos os direitos reservados.Criado por <a href="http://freeladev.online" style="color: orangered">Freela Dev</a>
+</footer>
