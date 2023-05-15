@@ -32,6 +32,10 @@ const Contas = db.define('contas', {
      pago: {
         type: DataTypes.STRING,
         required: true
+     },
+     dataOrdenar: {
+      type: DataTypes.DATE,
+      required: true
      }
 })
 

@@ -29,15 +29,77 @@ const adicionarActive = true
 module.exports = class ContasControllers {
         static async login(req,res){
             if(req.session.userid){
-                //Pega os dados do user
-                const dadosUser = await Users.findOne({include: Contas, where: {id: req.session.userid}})
+                //Pega os dados do user e as contas ordenadas
+                const dadosUser = await Users.findOne({
+                    include: {
+                      model: Contas, 
+                    },
+                    where: { id: req.session.userid },
+                    order: [[Contas, 'dataOrdenar', 'ASC']]
+                });
 
-                res.render('home', {homeActive, dadosUser: dadosUser.get({plain: true})})
+                
+
+                //Pega contas que já foram pagas
+                const contasPagas = await Users.findOne({
+                    include: {
+                      model: Contas, 
+                      where:{pago: 'sim'}
+                    },
+                    where: { id: req.session.userid },
+                    order: [[Contas, 'dataOrdenar', 'ASC']]
+                });
+
+                var temContasPagas = {tem: false, contaGreen: ''}
+
+                if(contasPagas){
+                    temContasPagas.tem = true
+                    temContasPagas.contaGreen = contasPagas.get({plain: true})
+                } else{
+                    temContasPagas.tem = false
+                }
+
+
+
+
+                //Pegar contas que estão vencendo
+                const contasVencendo = await Users.findOne({
+                    include: {
+                        model: Contas, 
+                        where:{vencendo: 'sim'}
+                    },
+                    where: { id: req.session.userid },
+                    order: [[Contas, 'dataOrdenar', 'ASC']]
+                });
+
+                var temContasVencendo = {tem: false, contaRed: ''}
+
+                if(contasVencendo){
+                    temContasVencendo.tem = true
+                    temContasVencendo.contaRed = contasVencendo.get({plain: true})
+                } else{
+                    temContasVencendo.tem = false
+                }
+
+
+
+                //LÓGICA PARA SOMAR O VALOR TOTAL DAS CONTAS
+                const contass = dadosUser.contas
+                let valorTotal = 0
+
+                contass.forEach((conta) => {
+                     valorTotal = valorTotal + parseFloat(conta.valor.replace(",", "."))
+                });
+
+
+
+                res.render('home', {temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
             } else{
                 res.render('login')
             }
         }
         
+
 
         static register(req,res){
             res.render('register')
@@ -100,12 +162,72 @@ module.exports = class ContasControllers {
              const senhaTesteLogin = await Users.findOne({raw: true, where: {senha: senha}})
 
              if(userTesteLogin != null && senhaTesteLogin != null){
-                //Pega os dados do user
-                const dadosUser = await Users.findOne({include: Contas, where: {id: userTesteLogin.id}})
+                //Pega os dados do user e as contas ordenadas
+                const dadosUser = await Users.findOne({
+                    include: {
+                        model: Contas, 
+                    },
+                    where: { id: userTesteLogin.id },
+                    order: [[Contas, 'dataOrdenar', 'ASC']]
+                });
+
+
+
+                //Pega contas que já foram pagas
+                const contasPagas = await Users.findOne({
+                    include: {
+                        model: Contas, 
+                        where:{pago: 'sim'}
+                    },
+                    where: { id: userTesteLogin.id },
+                    order: [[Contas, 'dataOrdenar', 'ASC']]
+                });
+
+                var temContasPagas = {tem: false, contaGreen: ''}
+
+                if(contasPagas){
+                    temContasPagas.tem = true
+                    temContasPagas.contaGreen = contasPagas.get({plain: true})
+                } else{
+                    temContasPagas.tem = false
+                }
+
+
+
+                //Pegar contas que estão vencendo
+                const contasVencendo = await Users.findOne({
+                    include: {
+                        model: Contas, 
+                        where:{vencendo: 'sim'}
+                    },
+                    where: { id: userTesteLogin.id },
+                    order: [[Contas, 'dataOrdenar', 'ASC']]
+                });
+
+                var temContasVencendo = {tem: false, contaRed: ''}
+
+                if(contasVencendo){
+                    temContasVencendo.tem = true
+                    temContasVencendo.contaRed = contasVencendo.get({plain: true})
+                } else{
+                    temContasVencendo.tem = false
+                }
+
+
+
+
+                //LÓGICA PARA SOMAR O VALOR TOTAL DAS CONTAS
+                const contass = dadosUser.contas
+                let valorTotal = 0
+
+                contass.forEach((conta) => {
+                        valorTotal = valorTotal + parseFloat(conta.valor.replace(",", "."))
+                });
+
 
                 req.session.userid = userTesteLogin.id 
                     req.session.save(()=>{
-                    res.render('home', {homeActive, dadosUser: dadosUser.get({plain: true})})
+                    res.render('home', {temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
                 })
              }else{
                 req.flash('messagee','Usuário ou senha incorreto!') 
@@ -119,10 +241,69 @@ module.exports = class ContasControllers {
         //HOME
         static async home(req,res){
             if(req.session.userid){
-                //Pega os dados do user
-                const dadosUser = await Users.findOne({include: Contas, where: {id: req.session.userid}})
+                //Pega os dados do user e as contas ordenadas
+                const dadosUser = await Users.findOne({
+                    include: {
+                        model: Contas, 
+                    },
+                    where: { id: req.session.userid },
+                    order: [[Contas, 'dataOrdenar', 'ASC']]
+                });
 
-                res.render('home', {homeActive, dadosUser: dadosUser.get({plain: true})})
+
+
+                //Pega contas que já foram pagas
+                const contasPagas = await Users.findOne({
+                    include: {
+                        model: Contas, 
+                        where:{pago: 'sim'}
+                    },
+                    where: { id: req.session.userid },
+                    order: [[Contas, 'dataOrdenar', 'ASC']]
+                });
+
+                var temContasPagas = {tem: false, contaGreen: ''}
+
+                if(contasPagas){
+                    temContasPagas.tem = true
+                    temContasPagas.contaGreen = contasPagas.get({plain: true})
+                } else{
+                    temContasPagas.tem = false
+                }
+
+
+
+                //Pegar contas que estão vencendo
+                const contasVencendo = await Users.findOne({
+                    include: {
+                        model: Contas, 
+                        where:{vencendo: 'sim'}
+                    },
+                    where: { id: req.session.userid },
+                    order: [[Contas, 'dataOrdenar', 'ASC']]
+                });
+
+                var temContasVencendo = {tem: false, contaRed: ''}
+
+                if(contasVencendo){
+                    temContasVencendo.tem = true
+                    temContasVencendo.contaRed = contasVencendo.get({plain: true})
+                } else{
+                    temContasVencendo.tem = false
+                }
+
+
+
+                //LÓGICA PARA SOMAR O VALOR TOTAL DAS CONTAS
+                const contass = dadosUser.contas
+                let valorTotal = 0
+
+                contass.forEach((conta) => {
+                        valorTotal = valorTotal + parseFloat(conta.valor.replace(",", "."))
+                });
+
+
+                res.render('home', {temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
             } else{
                 res.render('login')
             }
@@ -163,7 +344,7 @@ module.exports = class ContasControllers {
              function mudarOrdemData(data) {
                 var partes = data.split('-');
                 var ano = partes[0].slice(-2);
-                var novaData = partes[2] + '-' + partes[1] + '-' + ano;
+                var novaData = partes[2] + '/' + partes[1] + '/' + ano;
                 return novaData;
               }
 
@@ -178,10 +359,11 @@ module.exports = class ContasControllers {
                 nome,
                 valor,
                 parcela,
-                vencimento: dataNova,
+                vencimento:dataNova,
                 lembrete,
                 vencendo,
-                pago
+                pago,
+                dataOrdenar:vencimento
              }
 
              await Contas.create(novaConta)

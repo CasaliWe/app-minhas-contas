@@ -18,6 +18,14 @@
 }
 
 
+#division{
+    height: 1px;
+    width: 90%;
+    background-color: rgba(128, 128, 128, 0.445);
+    margin: 50px auto;
+}
+
+
 
 /*-------------------LOGIN---------------------*/
 #header-login{
