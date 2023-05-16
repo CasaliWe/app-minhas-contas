@@ -17,7 +17,7 @@
 
 
 
-{{#if pago}}
+{{#if messages.pago}}
 <div class="popup-acoes">
     <div class="content-popup bg-dark rounded d-flex flex-column align-items-center">
         <h4 class="text-center text-success">Conta paga!</h4>
@@ -30,7 +30,7 @@
 {{/if}}
 
 
-{{#if deletado}}
+{{#if messages.deletado}}
 <div class="popup-acoes">
     <div class="content-popup bg-dark rounded d-flex flex-column align-items-center">
         <h4 class="text-center text-danger">Conta deletada!</h4>
@@ -43,7 +43,7 @@
 {{/if}}
 
 
-{{#if editado}}
+{{#if messages.editado}}
 <div class="popup-acoes">
     <div class="content-popup bg-dark rounded d-flex flex-column align-items-center">
         <h4 class="text-center text-secondary">Conta editada!</h4>
@@ -56,8 +56,8 @@
 {{/if}}
 
 
-{{#if criado}}
-<div class="popup-acoes"></div>
+{{#if messages.criado}}
+<div class="popup-acoes">
     <div class="content-popup bg-dark rounded d-flex flex-column align-items-center">
         <h4 class="text-center text-white">Conta criada!</h4>
 
