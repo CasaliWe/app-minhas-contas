@@ -27,6 +27,8 @@ const adicionarActive = true
 
 
 module.exports = class ContasControllers {
+        
+        //Quando acesso a '/' verifica se está logado, se estiver leva para home com os dados, se não leva para login;
         static async login(req,res){
             if(req.session.userid){
                 //Pega os dados do user e as contas ordenadas
@@ -38,7 +40,11 @@ module.exports = class ContasControllers {
                     order: [[Contas, 'dataOrdenar', 'ASC']]
                 });
 
+
+                //Pega apenas as contas não pagas para mostrar no all
+                const contasNaoPagas = await Contas.findAll({raw:true, where:{userId: req.session.userid, pago: 'não'}, order: [['dataOrdenar', 'ASC']]})
                 
+
 
                 //Pega contas que já foram pagas
                 const contasPagas = await Users.findOne({
@@ -84,7 +90,7 @@ module.exports = class ContasControllers {
 
 
                 //LÓGICA PARA SOMAR O VALOR TOTAL DAS CONTAS
-                const contass = dadosUser.contas
+                const contass = contasNaoPagas
                 let valorTotal = 0
 
                 contass.forEach((conta) => {
@@ -93,17 +99,22 @@ module.exports = class ContasControllers {
 
 
 
-                res.render('home', {temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
+                res.render('home', {contasNaoPagas, temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
             } else{
                 res.render('login')
             }
         }
         
+  
 
 
+
+        //Mostra a view register
         static register(req,res){
             res.render('register')
         }
+
+
         
 
 
@@ -171,8 +182,9 @@ module.exports = class ContasControllers {
                     order: [[Contas, 'dataOrdenar', 'ASC']]
                 });
 
-                console.log(dadosUser)
-
+   
+                //Pega apenas as contas não pagas para mostrar no all
+                const contasNaoPagas = await Contas.findAll({raw:true, where:{userId: userTesteLogin.id, pago: 'não'}, order: [['dataOrdenar', 'ASC']]})
 
 
                 //Pega contas que já foram pagas
@@ -219,7 +231,7 @@ module.exports = class ContasControllers {
 
 
                 //LÓGICA PARA SOMAR O VALOR TOTAL DAS CONTAS
-                const contass = dadosUser.contas
+                const contass = contasNaoPagas
                 let valorTotal = 0
 
                 contass.forEach((conta) => {
@@ -229,7 +241,7 @@ module.exports = class ContasControllers {
 
                 req.session.userid = userTesteLogin.id 
                     req.session.save(()=>{
-                    res.render('home', {temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
+                    res.render('home', {contasNaoPagas, temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
                 })
              }else{
                 req.flash('messagee','Usuário ou senha incorreto!') 
@@ -254,6 +266,11 @@ module.exports = class ContasControllers {
 
 
 
+                //Pega apenas as contas não pagas para mostrar no all
+                const contasNaoPagas = await Contas.findAll({raw:true, where:{userId: req.session.userid, pago: 'não'}, order: [['dataOrdenar', 'ASC']]})
+
+
+
                 //Pega contas que já foram pagas
                 const contasPagas = await Users.findOne({
                     include: {
@@ -297,7 +314,7 @@ module.exports = class ContasControllers {
 
 
                 //LÓGICA PARA SOMAR O VALOR TOTAL DAS CONTAS
-                const contass = dadosUser.contas
+                const contass = contasNaoPagas
                 let valorTotal = 0
 
                 contass.forEach((conta) => {
@@ -305,7 +322,7 @@ module.exports = class ContasControllers {
                 });
 
 
-                res.render('home', {temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
+                res.render('home', {contasNaoPagas, temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
             } else{
                 res.render('login')
             }
@@ -313,7 +330,7 @@ module.exports = class ContasControllers {
 
 
 
-        //SAIR
+        //FAZER LOGOUT
         static sair(req,res){
             req.session.destroy()
             res.redirect('/')
@@ -321,7 +338,7 @@ module.exports = class ContasControllers {
 
 
 
-        //ADICIONAR
+        //MOSTRA A  VIEW ADICIONAR MAS COM OS DADOS DO USER
         static async adicionar(req,res){
             if(req.session.userid){
                 //Pega os dados do user
@@ -335,7 +352,7 @@ module.exports = class ContasControllers {
 
 
 
-        //ADICIONAR NOVA CONTA
+        //ADICIONA NOVA CONTA NO BANCO
         static async adicionarConta(req,res){
              const {userId, nome, valor, parcela, vencimento, lembrete} = req.body
              const vencendo = 'não'
@@ -379,6 +396,7 @@ module.exports = class ContasControllers {
                 lembrete,
                 vencendo,
                 pago,
+                mostrarBtnPago: 1,
                 dataOrdenar:vencimento
              }
 
@@ -427,25 +445,30 @@ module.exports = class ContasControllers {
 
 
 
-        //PAGO
+        //QUANDO CLICA EM PAGO
         static async pago(req,res){
             const id = req.body.idConta
             const pago = 'sim'
+            const vencendo = 'não'
             
             const contaaa = await Contas.findOne({raw:true, where:{id:id}})
 
             var string = parseFloat(contaaa.parcelaPaga)
             var parcelaPaga = string + 1
+            
+            //QUANDO A CONTA FOR PAGA TODAS AS PARCELAS, O BTN PAGO E EDITAR NÃO SERÁ MAIS MOSTRADO;
+            if(parcelaPaga == contaaa.parcela){
+                await Contas.update({mostrarBtnPago: 0}, {where:{id: id}})
+            }
 
-
-            await Contas.update({parcelaPaga, pago}, {where:{id: id}})
+            await Contas.update({parcelaPaga,vencendo, pago}, {where:{id: id}})
 
             res.redirect('/')
         }
 
 
 
-        //EDITAR
+        //QUANDO CLICA EM EDITAR
         static async editar(req,res){
             const id = req.body.idConta
 
@@ -460,7 +483,7 @@ module.exports = class ContasControllers {
         }
 
 
-        //FINALIZAR EDIÇÃO
+        //FINALIZA A EDIÇÃO DA CONTA
         static async finalizarEdit(req,res){
             const {idConta, nome, valor, parcela, vencimento, lembrete} = req.body
             const vencendo = 'não'
@@ -491,14 +514,14 @@ module.exports = class ContasControllers {
              var dataOriginal = vencimento;
              var dataNova = mudarOrdemData(dataOriginal);
 
-            await Contas.update({nome,valor,valorParcela,parcela,parcelaPaga: '0',vencimento:dataNova,lembrete,vencendo,pago,dataOrdenar:vencimento}, {where:{id: idConta}})
+            await Contas.update({nome,valor,valorParcela,parcela,parcelaPaga: '0',vencimento:dataNova,lembrete,vencendo,pago,mostarBtnPago: 1,dataOrdenar:vencimento}, {where:{id: idConta}})
 
             res.redirect('/')
         }
         
 
 
-        //DELETAR
+        //DELETAR A CONTA
         static async deletar(req,res){
             const id = req.body.idConta
 

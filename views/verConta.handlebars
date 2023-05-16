@@ -27,6 +27,8 @@
     <p class="mb-5 fs-3 ps-5"><strong>Vencimento:</strong> {{contaOne.vencimento}}</p>
 
     <div class="d-flex justify-content-center pt-3">
+        
+      {{#if contaOne.mostrarBtnPago}}
         <form action="/pago" method="post" class="mx-2">
            <input type="hidden" value="{{contaOne.id}}" name="idConta">
            <button type="submit" class="btn btn-success">PAGO</button>
@@ -35,6 +37,8 @@
            <input type="hidden" value="{{contaOne.id}}" name="idConta">
            <button type="submit" class="btn btn-secondary">EDITAR</button>
         </form>
+      {{/if}}
+
         <form action="/deletar" method="post" class="mx-2">
            <input type="hidden" value="{{contaOne.id}}" name="idConta">
            <button type="submit" class="btn btn-danger">EXCLUIR</button>

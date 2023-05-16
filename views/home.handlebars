@@ -17,7 +17,7 @@
 
 
 
-<main class="text-center">
+<main class="text-center" style="height: 65vh; overflow-y: auto;">
      <h1 class="text-success mb-5">Suas Contas</h1>
 
      <div class="container px-4">
@@ -28,9 +28,9 @@
           </div>
 
 
-        {{#if dadosUser.contas}}
+        {{#if contasNaoPagas}}
 
-            {{#each dadosUser.contas}}
+            {{#each contasNaoPagas}}
             <form action="/verConta" method="post" class="mb-3">
                 <input type="hidden" value="{{this.id}}" name="idConta">
 
@@ -45,7 +45,7 @@
             {{/each}}
 
             <div class="row p-2 mb-3 mt-4" style="background-color: #D9D9D9;">
-               <div class="col-12 text-dark text-start"><strong>Total: </strong> <span class="text-success fw-bold">{{valorTotal}} R$</span></div>
+               <div class="col-12 text-dark text-start"><strong>Total do mês: </strong> <span class="text-success fw-bold">{{valorTotal}} R$</span></div>
             </div>
 
         {{else}}

@@ -41,6 +41,9 @@ const Contas = db.define('contas', {
         type: DataTypes.STRING,
         required: true
      },
+     mostrarBtnPago: {
+        type: DataTypes.BOOLEAN,
+     },
      dataOrdenar: {
       type: DataTypes.DATE,
       required: true
