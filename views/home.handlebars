@@ -1,3 +1,76 @@
+{{#if dadosUser.boasVindas}}
+<div id="popup">
+
+        <div class="content-popup bg-dark rounded d-flex flex-column align-items-center">
+            <h4 class="text-center mb-3">Bem vindo <span style="color: orange;">{{dadosUser.nome}}</span>!</h4>
+
+            <p class="text-center">Organize suas contas mensais com facilidade. Adicione e controle suas despesas de forma simples. Receba lembretes por email dois dias antes do vencimento. Mantenha tudo organizado e em dia. <br> <br> Seja bem-vindo(a) e aproveite a praticidade de nossa ferramenta!</p>
+
+            <form action="/concluirBoasVindas" method="post">
+                <input type="hidden" value="{{dadosUser.id}}" name="id">
+                <button type="submit" class="btn btn-success mt-2">INICIAR</button>
+            </form>
+        </div>
+
+</div>
+{{/if}}
+
+
+
+{{#if pago}}
+<div class="popup-acoes">
+    <div class="content-popup bg-dark rounded d-flex flex-column align-items-center">
+        <h4 class="text-center text-success">Conta paga!</h4>
+
+        <img src="/img/success.png" class="my-4">
+
+        <button onclick="fecharModal()" class="btn btn-success mt-2">Ir para home</button>
+    </div>
+</div>
+{{/if}}
+
+
+{{#if deletado}}
+<div class="popup-acoes">
+    <div class="content-popup bg-dark rounded d-flex flex-column align-items-center">
+        <h4 class="text-center text-danger">Conta deletada!</h4>
+
+        <img src="/img/delete.png" class="my-4">
+
+        <button onclick="fecharModal()" class="btn btn-success mt-2">Ir para home</button>
+    </div>
+</div>
+{{/if}}
+
+
+{{#if editado}}
+<div class="popup-acoes">
+    <div class="content-popup bg-dark rounded d-flex flex-column align-items-center">
+        <h4 class="text-center text-secondary">Conta editada!</h4>
+
+        <img src="/img/edit2.png" class="my-4">
+
+        <button onclick="fecharModal()" class="btn btn-success mt-2">Ir para home</button>
+    </div>
+</div>
+{{/if}}
+
+
+{{#if criado}}
+<div class="popup-acoes"></div>
+    <div class="content-popup bg-dark rounded d-flex flex-column align-items-center">
+        <h4 class="text-center text-white">Conta criada!</h4>
+
+        <img src="/img/edit.png" class="my-4">
+
+        <button onclick="fecharModal()" class="btn btn-success mt-2">Ir para home</button>
+    </div>
+</div>
+{{/if}}
+
+
+
+
 <header id="header-home">
     <div>
         <span>{{dadosUser.nome}}</span>
@@ -18,7 +91,9 @@
 
 
 <main class="text-center" style="height: 65vh; overflow-y: auto;">
-     <h1 class="text-success mb-5">Suas Contas</h1>
+
+    {{#if contasNaoPagas}}
+     <h1 class="text-success mb-5">Suas Contas:</h1>
 
      <div class="container px-4">
           <div class="row p-2 mb-4" style="background-color: #D9D9D9;">
@@ -27,8 +102,6 @@
               <div class="col-4 text-dark text-end fw-bold">Valor</div>
           </div>
 
-
-        {{#if contasNaoPagas}}
 
             {{#each contasNaoPagas}}
             <form action="/verConta" method="post" class="mb-3">
@@ -48,12 +121,13 @@
                <div class="col-12 text-dark text-start"><strong>Total do mês: </strong> <span class="text-success fw-bold">{{valorTotal}} R$</span></div>
             </div>
 
-        {{else}}
-            <h5 class='mt-5 text-secondary'>Sem contas no momento!</h6>
-        {{/if}}
-
-
      </div>
+
+    {{else}}
+        <h5 class='mt-5 mb-3 text-secondary fs-5'>Sem contas no momento!</h6>
+
+        <a href="/adicionar" class="btn btn-success">Adicionar nova conta</a>
+    {{/if}}
 
 
 

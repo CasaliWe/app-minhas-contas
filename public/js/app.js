@@ -18,3 +18,12 @@ function apenasNumeros(event) {
     
     input.value = partes.join(",");
   }
+
+
+  //FECHAR POPUP
+  function fecharModal(){
+      document.querySelector('.popup-acoes').style.cssText = 'opacity: 0; transition: all 600ms;'
+      setTimeout(() => {
+        document.querySelector('.popup-acoes').style.cssText = 'display: none;'
+      }, 700);
+  }

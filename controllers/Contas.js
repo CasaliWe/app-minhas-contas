@@ -26,6 +26,12 @@ const homeActive = true
 const adicionarActive = true
 
 
+
+
+
+
+
+
 module.exports = class ContasControllers {
         
         //Quando acesso a '/' verifica se está logado, se estiver leva para home com os dados, se não leva para login;
@@ -121,6 +127,7 @@ module.exports = class ContasControllers {
         //CRIAR CONTA
         static async criarConta(req,res){
             const {nome, email, user, senha, confirm} = req.body
+            const boasVindas = 1
             
             //Verifica se as senhas são iguais
             if(senha != confirm){
@@ -155,7 +162,7 @@ module.exports = class ContasControllers {
 
             //Cria o user e salva no banco
             if(emailTeste == null && userTeste == null){
-                await Users.create({nome, user, senha, email}) 
+                await Users.create({nome, user, senha, email, boasVindas}) 
                 res.redirect('/')
 
                 return
@@ -528,5 +535,16 @@ module.exports = class ContasControllers {
             await Contas.destroy({where: {id: id}})
 
             res.redirect('/')
+        }
+
+
+        //CONCLUIR BOAS VINDAS
+        static async concluirBoasVindas(req,res){
+             const id = req.body.id
+             const boasVindas = 0
+
+             await Users.update({boasVindas}, {where:{id: id}})
+
+             res.redirect('/')
         }
 }

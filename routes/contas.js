@@ -41,6 +41,10 @@ router.post('/finalizarEdit', ContasControllers.finalizarEdit)
 //DELETAR
 router.post('/deletar', ContasControllers.deletar)
 
+//CONCLUIR BOAS VINDAS
+router.post('/concluirBoasVindas', ContasControllers.concluirBoasVindas)
+
+
 
 
 module.exports = router

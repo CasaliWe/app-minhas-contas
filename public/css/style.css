@@ -1,8 +1,9 @@
 .btn-sair{
     text-decoration: none;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 600;
-    margin-left: 12px;
+    margin-top: 5px;
+    margin-left: 17px;
 }
 
 .active-menu{
@@ -187,3 +188,25 @@
     color: rgba(255, 255, 255, 0.667);
 }
 /*-----------------------ADICIONAR------------------------*/
+
+
+
+
+
+/*----------------------POP UPS--------------------*/
+#popup, .popup-acoes{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.349);
+    color: white;
+}
+
+#popup .content-popup, .popup-acoes .content-popup{
+    width: 90%;
+    padding: 30px 10px;
+}
+/*----------------------POP UPS--------------------*/

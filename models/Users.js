@@ -19,6 +19,10 @@ const Users = db.define('users', {
         type: DataTypes.STRING,
         required: true
      },
+     boasVindas: {
+        type: DataTypes.BOOLEAN,
+        required: true
+     },
 })
 
 module.exports = Users
