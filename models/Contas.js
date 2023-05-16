@@ -13,7 +13,15 @@ const Contas = db.define('contas', {
          type: DataTypes.STRING,
          required: true
      },
+     valorParcela: {
+      type: DataTypes.STRING,
+      required: true
+     },
      parcela: {
+        type: DataTypes.STRING,
+        required: true
+     },
+     parcelaPaga: {
         type: DataTypes.STRING,
         required: true
      },

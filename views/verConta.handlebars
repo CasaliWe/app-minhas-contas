@@ -1,0 +1,43 @@
+<header id="header-home">
+    <div>
+        <span>{{dadosUser.nome}}</span>
+    </div>
+
+    <div>
+        <a href="/home">Contas</a> 
+        <span class="text-white mx-1" style="opacity: .3;">|</span>
+        <a href="/adicionar">Adicionar</a>
+    </div>
+</header>
+
+
+<div class="mb-4">
+    <a class="btn-sair text-secondary" href="/">Voltar</a>
+</div>
+
+
+<main>
+    <h2 class="text-center mt-4 mb-5 text-success">{{contaOne.nome}}</h2>
+
+    <p class="mb-3 fs-3 ps-5"><strong>Valor total:</strong> {{contaOne.valor}} R$</p>
+    <p class="mb-3 fs-3 ps-5"><strong>Parcelas:</strong> {{contaOne.parcela}}x</p>
+    <p class="mb-3 fs-3 ps-5"><strong>Valor da parcela:</strong> {{contaOne.valorParcela}} R$</p>
+    <p class="mb-3 fs-3 ps-5"><strong>Parcelas restantes:</strong> {{resFinal}}</p>
+    <p class="mb-3 fs-3 ps-5"><strong>Valor restante:</strong> {{valorRestante}} R$</p>
+    <p class="mb-5 fs-3 ps-5"><strong>Vencimento:</strong> {{contaOne.vencimento}}</p>
+
+    <div class="d-flex justify-content-center pt-3">
+        <form action="/pago" method="post" class="mx-2">
+           <input type="hidden" value="{{contaOne.id}}" name="idConta">
+           <button type="submit" class="btn btn-success">PAGO</button>
+        </form>
+        <form action="/editar" method="post" class="mx-2">
+           <input type="hidden" value="{{contaOne.id}}" name="idConta">
+           <button type="submit" class="btn btn-secondary">EDITAR</button>
+        </form>
+        <form action="/deletar" method="post" class="mx-2">
+           <input type="hidden" value="{{contaOne.id}}" name="idConta">
+           <button type="submit" class="btn btn-danger">EXCLUIR</button>
+        </form>
+    </div>
+</main>

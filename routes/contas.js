@@ -26,6 +26,21 @@ router.get('/logout', ContasControllers.sair)
 //ADICIONAR NOVA CONTA
 router.post('/adicionarConta', ContasControllers.adicionarConta)
 
+//VER CONTA INDIVIDUAL
+router.post('/verConta', ContasControllers.verConta)
+
+//PAGO
+router.post('/pago', ContasControllers.pago)
+
+//EDITAR
+router.post('/editar', ContasControllers.editar)
+
+//FINALIZAR EDIÇÃO
+router.post('/finalizarEdit', ContasControllers.finalizarEdit)
+
+//DELETAR
+router.post('/deletar', ContasControllers.deletar)
+
 
 
 module.exports = router

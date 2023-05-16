@@ -32,7 +32,7 @@ module.exports = class ContasControllers {
                 //Pega os dados do user e as contas ordenadas
                 const dadosUser = await Users.findOne({
                     include: {
-                      model: Contas, 
+                      model: Contas
                     },
                     where: { id: req.session.userid },
                     order: [[Contas, 'dataOrdenar', 'ASC']]
@@ -88,7 +88,7 @@ module.exports = class ContasControllers {
                 let valorTotal = 0
 
                 contass.forEach((conta) => {
-                     valorTotal = valorTotal + parseFloat(conta.valor.replace(",", "."))
+                     valorTotal = valorTotal + parseFloat(conta.valorParcela)
                 });
 
 
@@ -165,11 +165,13 @@ module.exports = class ContasControllers {
                 //Pega os dados do user e as contas ordenadas
                 const dadosUser = await Users.findOne({
                     include: {
-                        model: Contas, 
+                        model: Contas
                     },
                     where: { id: userTesteLogin.id },
                     order: [[Contas, 'dataOrdenar', 'ASC']]
                 });
+
+                console.log(dadosUser)
 
 
 
@@ -221,7 +223,7 @@ module.exports = class ContasControllers {
                 let valorTotal = 0
 
                 contass.forEach((conta) => {
-                        valorTotal = valorTotal + parseFloat(conta.valor.replace(",", "."))
+                        valorTotal = valorTotal + parseFloat(conta.valorParcela)
                 });
 
 
@@ -244,7 +246,7 @@ module.exports = class ContasControllers {
                 //Pega os dados do user e as contas ordenadas
                 const dadosUser = await Users.findOne({
                     include: {
-                        model: Contas, 
+                        model: Contas
                     },
                     where: { id: req.session.userid },
                     order: [[Contas, 'dataOrdenar', 'ASC']]
@@ -299,7 +301,7 @@ module.exports = class ContasControllers {
                 let valorTotal = 0
 
                 contass.forEach((conta) => {
-                        valorTotal = valorTotal + parseFloat(conta.valor.replace(",", "."))
+                        valorTotal = valorTotal + parseFloat(conta.valorParcela)
                 });
 
 
@@ -338,6 +340,18 @@ module.exports = class ContasControllers {
              const {userId, nome, valor, parcela, vencimento, lembrete} = req.body
              const vencendo = 'não'
              const pago = 'não'
+               
+             //FAZENDO O CALCULO DA PARCELA
+             var valorParcela;
+             var string1 = parseFloat(valor.replace(",", "."));
+             var string2 = parseFloat(parcela)
+
+             if(string2 > 1){
+                valorParcela = string1 / string2
+                valorParcela = valorParcela.toFixed(2)
+             }else{
+                valorParcela = valor
+             }
 
 
              //Reorganizando a ordem da data antes de salvar no banco
@@ -358,7 +372,9 @@ module.exports = class ContasControllers {
                 userId,
                 nome,
                 valor,
+                valorParcela,
                 parcela,
+                parcelaPaga: '0',
                 vencimento:dataNova,
                 lembrete,
                 vencendo,
@@ -369,5 +385,125 @@ module.exports = class ContasControllers {
              await Contas.create(novaConta)
 
              res.redirect('/')
+        }
+
+
+        //VER CONTA ESPECIFICA COM OS DETALHES
+        static async verConta(req,res){
+            const id = req.body.idConta
+
+            if(req.session.userid){
+                //Pega os dados do user
+                const dadosUser = await Users.findOne({raw: true, where: {id: req.session.userid}})
+                
+                //Pega conta desejada
+                const contaOne = await Contas.findOne({raw:true, where: {id: id}})
+
+                //Faz calculo para ver quntas parcelas restam
+                var string1 = parseFloat(contaOne.parcela)
+                var string2 = parseFloat(contaOne.parcelaPaga)
+                var resFinal = string1 - string2 + 'X'
+
+                if(resFinal == '0X'){
+                    resFinal = 'PAGO!'
+                }
+
+
+                //Faz calculo para ver qual o valor restante
+                var stringg1 = parseFloat(contaOne.parcela)
+                var stringg2 = parseFloat(contaOne.parcelaPaga)
+                var resFinall = stringg1 - stringg2
+
+                const valorRestante = resFinall * parseFloat(contaOne.valorParcela)
+
+
+
+                res.render('verConta', {contaOne, dadosUser, resFinal, valorRestante})
+            } else{
+                res.render('login')
+            }
+        }
+
+
+
+
+        //PAGO
+        static async pago(req,res){
+            const id = req.body.idConta
+            const pago = 'sim'
+            
+            const contaaa = await Contas.findOne({raw:true, where:{id:id}})
+
+            var string = parseFloat(contaaa.parcelaPaga)
+            var parcelaPaga = string + 1
+
+
+            await Contas.update({parcelaPaga, pago}, {where:{id: id}})
+
+            res.redirect('/')
+        }
+
+
+
+        //EDITAR
+        static async editar(req,res){
+            const id = req.body.idConta
+
+            if(req.session.userid){
+                const dadosUser = await Users.findOne({raw:true, where:{ id:req.session.userid }})
+                const dados = await Contas.findOne({raw:true, where:{ id:id }})
+
+                res.render('editar', {dados, dadosUser})
+            }else{
+                res.render('login')
+            }
+        }
+
+
+        //FINALIZAR EDIÇÃO
+        static async finalizarEdit(req,res){
+            const {idConta, nome, valor, parcela, vencimento, lembrete} = req.body
+            const vencendo = 'não'
+            const pago = 'não'
+            
+
+            //FAZENDO O CALCULO DA PARCELA
+            var valorParcela;
+            var string1 = parseFloat(valor.replace(",", "."));
+            var string2 = parseFloat(parcela)
+
+            if(string2 > 1){
+                valorParcela = string1 / string2
+                valorParcela = valorParcela.toFixed(2)
+            }else{
+                valorParcela = valor
+            }
+
+
+            //Reorganizando a ordem da data antes de salvar no banco
+            function mudarOrdemData(data) {
+               var partes = data.split('-');
+               var ano = partes[0].slice(-2);
+               var novaData = partes[2] + '/' + partes[1] + '/' + ano;
+               return novaData;
+             }
+
+             var dataOriginal = vencimento;
+             var dataNova = mudarOrdemData(dataOriginal);
+
+            await Contas.update({nome,valor,valorParcela,parcela,parcelaPaga: '0',vencimento:dataNova,lembrete,vencendo,pago,dataOrdenar:vencimento}, {where:{id: idConta}})
+
+            res.redirect('/')
+        }
+        
+
+
+        //DELETAR
+        static async deletar(req,res){
+            const id = req.body.idConta
+
+            await Contas.destroy({where: {id: id}})
+
+            res.redirect('/')
         }
 }

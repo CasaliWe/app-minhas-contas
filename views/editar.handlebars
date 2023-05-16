@@ -13,19 +13,19 @@
 
 
 <div class="mb-4">
-    <a class="btn-sair text-danger" href="/logout">Sair</a>
+    <a class="btn-sair text-secondary" href="/">Voltar</a>
 </div>
 
 
 <main class="text-center pb-5">
-    <h1 class="text-success mb-5">Adicionar conta</h1>
+    <h1 class="text-success mb-5">Editar conta</h1>
 
-    <form action="/adicionarConta" method="post" class="d-flex flex-column">
+    <form action="/finalizarEdit" method="post" class="d-flex flex-column">
 
-       <input type="hidden" value="{{dadosUser.id}}" name="userId">
+       <input type="hidden" value="{{dados.id}}" name="idConta">
      
-       <input type="text" name="nome" class="form-control mb-3 w-75 mx-auto" required placeholder="Nome da conta">
-       <input type="text" name="valor" class="form-control mb-3 w-75 mx-auto" required placeholder="Valor da conta" onkeypress="return apenasNumeros(event)" oninput="formatarValor(this)">
+       <input value="{{dados.nome}}" type="text" name="nome" class="form-control mb-3 w-75 mx-auto" required placeholder="Nome da conta">
+       <input value="{{dados.valor}}" type="text" name="valor" class="form-control mb-3 w-75 mx-auto" required placeholder="Valor da conta" onkeypress="return apenasNumeros(event)" oninput="formatarValor(this)">
        <select name="parcela" class="form-control mb-3 w-75 mx-auto">
           <option value="1">Á vista</option>
           <option value="2">2x</option>
@@ -52,14 +52,14 @@
           <option value="23">23x</option>
           <option value="24">24x</option>
        </select>
-       <input type="date" name="vencimento" class="form-control mb-3 w-75 mx-auto" required placeholder="Vencimento">
+       <input type="date" value="{{dados.vencimento}}" name="vencimento" class="form-control mb-3 w-75 mx-auto" required placeholder="Vencimento">
        <select name="lembrete" class="form-control mb-3 w-75 mx-auto">
            <option value="sim">Sim</option>
            <option value="não">Não</option>
        </select>
 
 
-       <button type="submit" class="btn btn-success w-50 mt-3 mx-auto">Salvar Conta</button>
+       <button type="submit" class="btn btn-success w-50 mt-3 mx-auto">Editar Conta</button>
 
     </form>
 </main>
