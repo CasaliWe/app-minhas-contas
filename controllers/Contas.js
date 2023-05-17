@@ -32,9 +32,8 @@ const adicionarActive = true
 
 
 
-
 //AGENDAMENTO DA FUNÇÃO BUSCAR CONTAS VENCENDO E ENVIAR EMAIL NOTIFICAÇÃO
-const task = cron.schedule('38 17 * * *', () => {
+const task = cron.schedule('00 09 * * *', () => {
     contasAtrasadas();
 });
 
@@ -102,7 +101,7 @@ function enviarEmail(nome, email, contas){
     transporter.sendMail({
         from: user,
         to: email,
-        subject: `Olá ${nome} tem conta sua prestes a vencer!`,
+        subject: `Olá ${nome}! tem conta sua prestes a vencer!`,
         html: `
         
             <div style='text-align:center; padding: 20px;'>
@@ -113,6 +112,59 @@ function enviarEmail(nome, email, contas){
     }).then((info)=>{console.log('Email Enviado')}).catch(err => console.log(err))
 
 }
+
+
+
+
+
+
+
+
+
+//AGENDAMENTO DE ATUALIZAÇÃO DE CONTAS PAGAS TODO DIA 1 DE CADA MÊS;
+const task2 = cron.schedule('20 00 * * *', () => {
+    ReiniciarContasPagas();
+});
+
+
+function ReiniciarContasPagas(){
+
+       const hoje = new Date()
+       const day = hoje.getDate()
+       
+       if(day == 1){
+            resetPago();
+       }
+
+}
+
+async function resetPago(){
+      const allContas = await Contas.findAll({raw:true, where:{pago: 'sim'}})
+
+      var contasDeletar = []
+      var contasRetirarPago = []
+      var pago = 'não'
+     
+      allContas.forEach((conta)=>{
+            if(conta.parcela == conta.parcelaPaga){
+                contasDeletar.push(conta.id)
+            }
+
+            if(conta.parcela != conta.parcelaPaga){
+                contasRetirarPago.push(conta.id)
+            }
+      })
+
+      await Contas.destroy({where:{id: { [Op.in]: contasDeletar }}})
+      await Contas.update({pago}, {where:{id: { [Op.in]: contasRetirarPago }}})
+}
+
+task2.start();
+
+
+
+
+
 
 
 
