@@ -7,6 +7,8 @@ const { Cookie } = require('express-session')
 const session = require('express-session')
 const FileStore = require('session-file-store')(session)
 
+const cron = require('node-cron')
+
 const conn = require('./db/conn')
 
 const contasRoutes = require('./routes/contas') 

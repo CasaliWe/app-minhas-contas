@@ -3,7 +3,11 @@ const Contas = require('../models/Contas')
 
 const nodemailer = require('nodemailer')
 
+const cron = require('node-cron')
+
 require('dotenv').config()
+
+const { Op, where } = require('sequelize');
 
 
 
@@ -24,6 +28,61 @@ const transporter = nodemailer.createTransport({
 
 const homeActive = true
 const adicionarActive = true
+
+
+
+
+
+//AGENDAMENTO DA FUNÇÃO BUSCAR CONTAS VENCENDO E ENVIAR EMAIL NOTIFICAÇÃO
+const task = cron.schedule('50 23 * * *', () => {
+    contasAtrasadas();
+});
+
+async function contasAtrasadas() {
+
+    const ids = []
+    const userIds = []
+      
+    const coontas = await Contas.findAll({raw:true, where:{lembrete: 'sim', pago:'não', vencendo: 'não'}})
+    coontas.forEach((conta)=>{
+        
+        //Pegando a data do banco e separando o mês e o dia
+        var dataBanco = conta.dataOrdenar
+        var mesBanco = dataBanco.getMonth() + 1
+        var diaBanco = dataBanco.getDate() + 1
+        
+        //Pegando a data atual e separando o mês e o dia
+        var dataAtual = new Date()
+        var mesAtual = dataAtual.getMonth() + 1
+        var diaAtual = dataAtual.getDate() + 1
+        
+        //Verifica se a data do banco está 2 dias a frente para fazer o lembrete
+        if(mesAtual == mesBanco && diaAtual +2 == diaBanco){
+            ids.push(conta.id)
+            userIds.push(conta.userId)
+        }
+    })
+    
+    const vencendo = 'sim'
+    if(ids.length != 0){
+        await Contas.update({vencendo}, {where:{id: { [Op.in]: ids }}})
+    }
+    
+
+    //PEGANDO O USER PARA TER O EMAIL E TRAZENDO AS CONTAS VENCENDO
+    if(userIds.length != 0){
+        //FILTRANDO O ARRAY DE USERID PARA QUE NÃO REPITA USERIDS
+        const userIdsFiltrado = userIds.filter((valor, indice, array) => {
+            return array.indexOf(valor) === indice;
+        });
+
+        const allDados = await Users.findAll({include: {model: Contas, where:{vencendo:'sim'}}, where:{id: { [Op.in]: userIdsFiltrado }}})
+        const dadosConvertidos = allDados.map((result)=> result.get({plain:true}))
+        console.log(dadosConvertidos) //Aqui está o array com os users p/ envio d email junto as contas vencendo;
+    }
+}
+
+task.start();
 
 
 
