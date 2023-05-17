@@ -34,7 +34,7 @@ const adicionarActive = true
 
 
 //AGENDAMENTO DA FUNÇÃO BUSCAR CONTAS VENCENDO E ENVIAR EMAIL NOTIFICAÇÃO
-const task = cron.schedule('50 23 * * *', () => {
+const task = cron.schedule('38 17 * * *', () => {
     contasAtrasadas();
 });
 
@@ -54,7 +54,7 @@ async function contasAtrasadas() {
         //Pegando a data atual e separando o mês e o dia
         var dataAtual = new Date()
         var mesAtual = dataAtual.getMonth() + 1
-        var diaAtual = dataAtual.getDate() + 1
+        var diaAtual = dataAtual.getDate() 
         
         //Verifica se a data do banco está 2 dias a frente para fazer o lembrete
         if(mesAtual == mesBanco && diaAtual +2 == diaBanco){
@@ -62,6 +62,7 @@ async function contasAtrasadas() {
             userIds.push(conta.userId)
         }
     })
+
     
     const vencendo = 'sim'
     if(ids.length != 0){
@@ -78,12 +79,40 @@ async function contasAtrasadas() {
 
         const allDados = await Users.findAll({include: {model: Contas, where:{vencendo:'sim'}}, where:{id: { [Op.in]: userIdsFiltrado }}})
         const dadosConvertidos = allDados.map((result)=> result.get({plain:true}))
-        console.log(dadosConvertidos) //Aqui está o array com os users p/ envio d email junto as contas vencendo;
+        //CHAMANDO A FUNÇÃO QUE ENVIA EMAIL NOTIFICANDO DAS CONTAS VENCENDO
+        dadosConvertidos.forEach((userNotificar)=>{
+            enviarEmail(userNotificar.nome,userNotificar.email,userNotificar.contas)
+        })
     }
 }
 
 task.start();
 
+
+//FUNÇÃO QUE ENVIA EMAIL NOTIFICANDO AS CONTAS VENCENDO
+function enviarEmail(nome, email, contas){
+
+    //Juntando os nomes das contas vencendo
+    var contasVencendoNotificar = ''
+    contas.forEach((contaa)=>{
+        contasVencendoNotificar = contasVencendoNotificar + `${contaa.nome} de ${contaa.valor} R$` + ' , '
+    })
+     
+    //enviando emal
+    transporter.sendMail({
+        from: user,
+        to: email,
+        subject: `Olá ${nome} tem conta sua prestes a vencer!`,
+        html: `
+        
+            <div style='text-align:center; padding: 20px;'>
+                <p style='text-align:center;'>Suas contas que vencerão daqui 2 dias são: <strong>${contasVencendoNotificar}</strong> fique atento!</p>
+            </div>
+
+        `
+    }).then((info)=>{console.log('Email Enviado')}).catch(err => console.log(err))
+
+}
 
 
 
