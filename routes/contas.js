@@ -47,4 +47,38 @@ router.post('/concluirBoasVindas', ContasControllers.concluirBoasVindas)
 
 
 
+
+//ATUALIZAR NOME
+router.get('/mudarNome', ContasControllers.mudarNome)
+
+//ATUALIZAR NOME PARTE FINAL
+router.post('/atualizarNome', ContasControllers.atualizarNome)
+
+
+
+//ATUALIZAR USER
+router.get('/mudarUser', ContasControllers.mudarUser)
+
+//ATUALIZAR USER PARTE FINAL
+router.post('/atualizarUser', ContasControllers.atualizarUser)
+
+
+
+//ATUALIZAR EMAIL
+router.get('/mudarEmail', ContasControllers.mudarEmail)
+
+//ATUALIZAR EMAIL PARTE FINAL
+router.post('/atualizarEmail', ContasControllers.atualizarEmail)
+
+
+
+
+//ATUALIZAR SENHA
+router.get('/mudarSenha', ContasControllers.mudarSenha)
+
+//ATUALIZAR SENHA PARTE FINAL
+router.post('/atualizarSenha', ContasControllers.atualizarSenha)
+
+
+
 module.exports = router

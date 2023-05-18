@@ -966,4 +966,389 @@ module.exports = class ContasControllers {
 
              res.redirect('/')
         }
+
+
+
+
+
+        //MUDAR NOME
+        static async mudarNome(req,res){
+            if(req.session.userid){
+                const id = req.session.userid
+
+                const dadosUser = await Users.findOne({raw: true, where: {id: id}})
+
+                res.render('mudarNome', {dadosUser})
+            }else{
+                res.render('login')
+            }
+        }
+
+        //MUDAR NOME PARTE FINAL
+        static async atualizarNome(req,res){
+            const {id, nome} = req.body
+
+            await Users.update({nome}, {where:{id:id}})
+
+
+            ///////////////////////////////////////////////////////////////////
+            const dadosUser = await Users.findOne({
+                include: {
+                    model: Contas
+                },
+                where: { id: req.session.userid },
+                order: [[Contas, 'dataOrdenar', 'ASC']]
+            });
+
+
+            //Pega apenas as contas não pagas para mostrar no all
+            const contasNaoPagas = await Contas.findAll({raw:true, where:{userId: req.session.userid, pago: 'não'}, order: [['dataOrdenar', 'ASC']]})
+
+
+            //Pega contas que já foram pagas
+            const contasPagas = await Users.findOne({
+                include: {
+                    model: Contas, 
+                    where:{pago: 'sim'}
+                },
+                where: { id: req.session.userid },
+                order: [[Contas, 'dataOrdenar', 'ASC']]
+            });
+
+            var temContasPagas = {tem: false, contaGreen: ''}
+
+            if(contasPagas){
+                temContasPagas.tem = true
+                temContasPagas.contaGreen = contasPagas.get({plain: true})
+            } else{
+                temContasPagas.tem = false
+            }
+
+
+            //Pegar contas que estão vencendo
+            const contasVencendo = await Users.findOne({
+                include: {
+                    model: Contas, 
+                    where:{vencendo: 'sim'}
+                },
+                where: { id: req.session.userid },
+                order: [[Contas, 'dataOrdenar', 'ASC']]
+            });
+
+            var temContasVencendo = {tem: false, contaRed: ''}
+
+            if(contasVencendo){
+                temContasVencendo.tem = true
+                temContasVencendo.contaRed = contasVencendo.get({plain: true})
+            } else{
+                temContasVencendo.tem = false
+            }
+
+
+            //LÓGICA PARA SOMAR O VALOR TOTAL DAS CONTAS
+            const contass = contasNaoPagas
+            let valorTotal = 0
+
+            contass.forEach((conta) => {
+                    valorTotal = valorTotal + parseFloat(conta.valorParcela)
+            });
+
+            req.flash('nomeAtualizado','.') 
+            res.render('home', {contasNaoPagas, temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
+        }
+
+
+
+
+
+
+
+
+        //MUDAR USER
+        static async mudarUser(req,res){
+            if(req.session.userid){
+                const id = req.session.userid
+
+                const dadosUser = await Users.findOne({raw: true, where: {id: id}})
+
+                res.render('mudarUser', {dadosUser})
+            }else{
+                res.render('login')
+            }
+        }
+
+
+
+        //MUDAR USER PARTE FINAL
+        static async atualizarUser(req,res){
+            const {id, user} = req.body
+
+            await Users.update({user}, {where:{id:id}})
+
+
+            ///////////////////////////////////////////////////////////////////
+            const dadosUser = await Users.findOne({
+                include: {
+                    model: Contas
+                },
+                where: { id: req.session.userid },
+                order: [[Contas, 'dataOrdenar', 'ASC']]
+            });
+
+
+            //Pega apenas as contas não pagas para mostrar no all
+            const contasNaoPagas = await Contas.findAll({raw:true, where:{userId: req.session.userid, pago: 'não'}, order: [['dataOrdenar', 'ASC']]})
+
+
+            //Pega contas que já foram pagas
+            const contasPagas = await Users.findOne({
+                include: {
+                    model: Contas, 
+                    where:{pago: 'sim'}
+                },
+                where: { id: req.session.userid },
+                order: [[Contas, 'dataOrdenar', 'ASC']]
+            });
+
+            var temContasPagas = {tem: false, contaGreen: ''}
+
+            if(contasPagas){
+                temContasPagas.tem = true
+                temContasPagas.contaGreen = contasPagas.get({plain: true})
+            } else{
+                temContasPagas.tem = false
+            }
+
+
+            //Pegar contas que estão vencendo
+            const contasVencendo = await Users.findOne({
+                include: {
+                    model: Contas, 
+                    where:{vencendo: 'sim'}
+                },
+                where: { id: req.session.userid },
+                order: [[Contas, 'dataOrdenar', 'ASC']]
+            });
+
+            var temContasVencendo = {tem: false, contaRed: ''}
+
+            if(contasVencendo){
+                temContasVencendo.tem = true
+                temContasVencendo.contaRed = contasVencendo.get({plain: true})
+            } else{
+                temContasVencendo.tem = false
+            }
+
+
+            //LÓGICA PARA SOMAR O VALOR TOTAL DAS CONTAS
+            const contass = contasNaoPagas
+            let valorTotal = 0
+
+            contass.forEach((conta) => {
+                    valorTotal = valorTotal + parseFloat(conta.valorParcela)
+            });
+
+            req.flash('userAtualizado','.') 
+            res.render('home', {contasNaoPagas, temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
+        }
+
+
+
+
+
+
+
+        //MUDAR EMAIL
+        static async mudarEmail(req,res){
+            if(req.session.userid){
+                const id = req.session.userid
+
+                const dadosUser = await Users.findOne({raw: true, where: {id: id}})
+
+                res.render('mudarEmail', {dadosUser})
+            }else{
+                res.render('login')
+            }
+        }
+
+
+
+        //MUDAR EMAIL PARTE FINAL
+        static async atualizarEmail(req,res){
+            const {id, email} = req.body
+
+            await Users.update({email}, {where:{id:id}})
+
+
+            ///////////////////////////////////////////////////////////////////
+            const dadosUser = await Users.findOne({
+                include: {
+                    model: Contas
+                },
+                where: { id: req.session.userid },
+                order: [[Contas, 'dataOrdenar', 'ASC']]
+            });
+
+
+            //Pega apenas as contas não pagas para mostrar no all
+            const contasNaoPagas = await Contas.findAll({raw:true, where:{userId: req.session.userid, pago: 'não'}, order: [['dataOrdenar', 'ASC']]})
+
+
+            //Pega contas que já foram pagas
+            const contasPagas = await Users.findOne({
+                include: {
+                    model: Contas, 
+                    where:{pago: 'sim'}
+                },
+                where: { id: req.session.userid },
+                order: [[Contas, 'dataOrdenar', 'ASC']]
+            });
+
+            var temContasPagas = {tem: false, contaGreen: ''}
+
+            if(contasPagas){
+                temContasPagas.tem = true
+                temContasPagas.contaGreen = contasPagas.get({plain: true})
+            } else{
+                temContasPagas.tem = false
+            }
+
+
+            //Pegar contas que estão vencendo
+            const contasVencendo = await Users.findOne({
+                include: {
+                    model: Contas, 
+                    where:{vencendo: 'sim'}
+                },
+                where: { id: req.session.userid },
+                order: [[Contas, 'dataOrdenar', 'ASC']]
+            });
+
+            var temContasVencendo = {tem: false, contaRed: ''}
+
+            if(contasVencendo){
+                temContasVencendo.tem = true
+                temContasVencendo.contaRed = contasVencendo.get({plain: true})
+            } else{
+                temContasVencendo.tem = false
+            }
+
+
+            //LÓGICA PARA SOMAR O VALOR TOTAL DAS CONTAS
+            const contass = contasNaoPagas
+            let valorTotal = 0
+
+            contass.forEach((conta) => {
+                    valorTotal = valorTotal + parseFloat(conta.valorParcela)
+            });
+
+            req.flash('emailAtualizado','.') 
+            res.render('home', {contasNaoPagas, temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
+        }
+
+
+
+
+
+
+
+        
+        //MUDAR SENHA
+        static async mudarSenha(req,res){
+            if(req.session.userid){
+                const id = req.session.userid
+
+                const dadosUser = await Users.findOne({raw: true, where: {id: id}})
+
+                res.render('mudarSenha', {dadosUser})
+            }else{
+                res.render('login')
+            }
+        }
+
+
+
+        //MUDAR SENHA PARTE FINAL
+        static async atualizarSenha(req,res){
+            const {id, atual, nova, confirm} = req.body
+            var senha = confirm
+             
+
+            const dadosUser = await Users.findOne({
+                include: {
+                    model: Contas
+                },
+                where: { id: req.session.userid },
+                order: [[Contas, 'dataOrdenar', 'ASC']]
+            });
+
+             
+            //FAZER LÓGICA AQUI.................................................
+            console.log(dadosUser)
+            console.log(senha)
+            console.log(id)
+            console.log(atual)
+            console.log(nova)
+            //O USER ACIMA ESTA ESTRANHO!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+            ///////////////////////////////////////////////////////////////////
+
+            //Pega apenas as contas não pagas para mostrar no all
+            const contasNaoPagas = await Contas.findAll({raw:true, where:{userId: req.session.userid, pago: 'não'}, order: [['dataOrdenar', 'ASC']]})
+
+
+            //Pega contas que já foram pagas
+            const contasPagas = await Users.findOne({
+                include: {
+                    model: Contas, 
+                    where:{pago: 'sim'}
+                },
+                where: { id: req.session.userid },
+                order: [[Contas, 'dataOrdenar', 'ASC']]
+            });
+
+            var temContasPagas = {tem: false, contaGreen: ''}
+
+            if(contasPagas){
+                temContasPagas.tem = true
+                temContasPagas.contaGreen = contasPagas.get({plain: true})
+            } else{
+                temContasPagas.tem = false
+            }
+
+
+            //Pegar contas que estão vencendo
+            const contasVencendo = await Users.findOne({
+                include: {
+                    model: Contas, 
+                    where:{vencendo: 'sim'}
+                },
+                where: { id: req.session.userid },
+                order: [[Contas, 'dataOrdenar', 'ASC']]
+            });
+
+            var temContasVencendo = {tem: false, contaRed: ''}
+
+            if(contasVencendo){
+                temContasVencendo.tem = true
+                temContasVencendo.contaRed = contasVencendo.get({plain: true})
+            } else{
+                temContasVencendo.tem = false
+            }
+
+
+            //LÓGICA PARA SOMAR O VALOR TOTAL DAS CONTAS
+            const contass = contasNaoPagas
+            let valorTotal = 0
+
+            contass.forEach((conta) => {
+                    valorTotal = valorTotal + parseFloat(conta.valorParcela)
+            });
+
+            req.flash('senhaAtualizado','.') 
+            res.render('home', {contasNaoPagas, temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
+        }
+        
 }
