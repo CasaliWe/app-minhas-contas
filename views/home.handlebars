@@ -84,10 +84,93 @@
 </header>
 
 
+
+
+<!--menu escondido-->
+<div id="menu-escondido">
+    <h3 class="mb-4">MEUS DADOS:</h3>
+
+    <div class="w-100 p-3 mb-2 d-flex justify-content-between border">
+        <div class="d-flex">
+            <div style="width: 35px; height:35px;" class="align-self-center me-3 d-flex justify-content-center align-items-center">
+                <img src="/img/id1.png" class="img-fluid">
+            </div>
+
+            <div class="d-flex flex-column">
+                <span class="fw-bold">Nome</span>
+                <span class="text-secondary">{{dadosUser.nome}}</span>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center align-items-center">
+            <img class="w-50" src="/img/arrow.png">
+        </div>
+    </div>
+
+
+    <div class="w-100 p-3 mb-2 d-flex justify-content-between border">
+        <div class="d-flex">
+            <div style="width: 35px; height:35px;" class="align-self-center me-3 d-flex justify-content-center align-items-center">
+                <img src="/img/id2.png" class="img-fluid">
+            </div>
+
+            <div class="d-flex flex-column">
+                <span class="fw-bold">Usuário</span>
+                <span class="text-secondary">{{dadosUser.user}}</span>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center align-items-center">
+            <img class="w-50" src="/img/arrow.png">
+        </div>
+    </div>
+
+
+    <div class="w-100 p-3 mb-2 d-flex justify-content-between border">
+        <div class="d-flex">
+            <div style="width: 35px; height:35px;" class="align-self-center me-3 d-flex justify-content-center align-items-center">
+                <img src="/img/email.png" class="img-fluid">
+            </div>
+
+            <div class="d-flex flex-column">
+                <span class="fw-bold">E-mail</span>
+                <span class="text-secondary">{{dadosUser.email}}</span>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center align-items-center">
+            <img class="w-50" src="/img/arrow.png">
+        </div>
+    </div>
+
+
+
+    <div class="w-100 p-3 mb-2 d-flex justify-content-between border">
+        <div class="d-flex">
+            <div style="width: 35px; height:35px;" class="align-self-center me-3 d-flex justify-content-center align-items-center">
+                <img src="/img/password.png" class="img-fluid">
+            </div>
+
+            <div class="d-flex flex-column">
+                <span class="fw-bold">Senha</span>
+                <span class="text-secondary">*********</span>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center align-items-center">
+            <img class="w-50" src="/img/arrow.png">
+        </div>
+    </div>
+</div>
+<!--menu escondido-->
+
 <div class="mb-4 d-flex justify-content-between">
     <a class="btn-sair" href="/logout"><img src="/img/sair.png"></a>
     <a class="btn-menu"><img onclick="abrirMenu()" src="/img/menu.png"></a>
 </div>
+
+
+
 
 
 
@@ -192,6 +275,7 @@
 {{/if}}
 
 </main>
+
 
 
 <footer id="footer-login" class="text-center py-3 mt-5 text-white">

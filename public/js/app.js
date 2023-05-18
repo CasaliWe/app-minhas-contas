@@ -36,8 +36,10 @@ function abrirMenu(){
     if(controleAberturaMenu){
        document.querySelector('.btn-menu').innerHTML = '<img onclick="abrirMenu()" src="/img/menu.png">'
        controleAberturaMenu = false
+       document.getElementById('menu-escondido').style.cssText = 'width: 0%; transition: all 500ms;'
     }else{
        document.querySelector('.btn-menu').innerHTML = '<img onclick="abrirMenu()" src="/img/close.png">'
        controleAberturaMenu = true
+       document.getElementById('menu-escondido').style.cssText = 'width: 100%; transition: all 500ms;'
     }
 }
