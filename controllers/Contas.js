@@ -33,7 +33,7 @@ const adicionarActive = true
 
 
 //AGENDAMENTO DA FUNÇÃO BUSCAR CONTAS VENCENDO E ENVIAR EMAIL NOTIFICAÇÃO
-const task = cron.schedule('00 09 * * *', () => {
+const task = cron.schedule('48 07 * * *', () => {
     contasAtrasadas();
 });
 
@@ -106,6 +106,8 @@ function enviarEmail(nome, email, contas){
         
             <div style='text-align:center; padding: 20px;'>
                 <p style='text-align:center;'>Suas contas que vencerão daqui 2 dias são: <strong>${contasVencendoNotificar}</strong> fique atento!</p>
+
+                <a style='text-decoration: none;background-color: green;color: white;padding: 7px 15px;border-radius: 3px;margin-top: 15px;margin: 0 auto;' href="http://minhascontas.fun">Acessar contas</a>
             </div>
 
         `

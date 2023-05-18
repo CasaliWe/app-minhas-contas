@@ -27,3 +27,17 @@ function apenasNumeros(event) {
         document.querySelector('.popup-acoes').style.cssText = 'display: none;'
       }, 700);
   }
+
+
+
+//ABRIR MENU
+var controleAberturaMenu = false
+function abrirMenu(){
+    if(controleAberturaMenu){
+       document.querySelector('.btn-menu').innerHTML = '<img onclick="abrirMenu()" src="/img/menu.png">'
+       controleAberturaMenu = false
+    }else{
+       document.querySelector('.btn-menu').innerHTML = '<img onclick="abrirMenu()" src="/img/close.png">'
+       controleAberturaMenu = true
+    }
+}
