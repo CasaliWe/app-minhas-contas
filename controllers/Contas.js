@@ -32,8 +32,96 @@ const adicionarActive = true
 
 
 
+
+//AGENDAMENTO DA FUNÇÃO BUSCAR CONTAS QUE JÁ VENCERAM E ENVIAR EMAIL NOTIFICAÇÃO
+const contasPassou = cron.schedule('00 09 * * *', () => {
+    contasPassadas();
+});
+
+async function contasPassadas() {
+
+    const ids = []
+    const userIds = []
+      
+    const coontas = await Contas.findAll({raw:true, where:{lembrete: 'sim', pago:'não', vencendo: 'sim'}})
+    coontas.forEach((conta)=>{
+        
+        //Pegando a data do banco e separando o mês e o dia
+        var dataBanco = conta.dataOrdenar
+        var mesBanco = dataBanco.getMonth() + 1
+        var diaBanco = dataBanco.getDate() + 1
+        
+        //Pegando a data atual e separando o mês e o dia
+        var dataAtual = new Date()
+        var mesAtual = dataAtual.getMonth() + 1
+        var diaAtual = dataAtual.getDate() 
+        
+        //Verifica se a data do banco está 2 dias a frente para fazer o lembrete
+        if(mesAtual >= mesBanco && diaAtual > diaBanco){
+            ids.push(conta.id)
+            userIds.push(conta.userId)
+        }
+    })
+    
+
+    //PEGANDO O USER PARA TER O EMAIL E TRAZENDO AS CONTAS VENCENDO
+    if(userIds.length != 0){
+        //FILTRANDO O ARRAY DE USERID PARA QUE NÃO REPITA USERIDS
+        const userIdsFiltrado = userIds.filter((valor, indice, array) => {
+            return array.indexOf(valor) === indice;
+        });
+
+        const allDados = await Users.findAll({include: {model: Contas, where:{id: { [Op.in]: ids }}}, where:{id: { [Op.in]: userIdsFiltrado }}})
+        const dadosConvertidos = allDados.map((result)=> result.get({plain:true}))
+        //CHAMANDO A FUNÇÃO QUE ENVIA EMAIL NOTIFICANDO DAS CONTAS VENCENDO
+        dadosConvertidos.forEach((userNotificar)=>{
+            enviarEmailAtrasado(userNotificar.nome,userNotificar.email,userNotificar.contas)
+        })
+    }
+}
+
+contasPassou.start();
+
+
+//FUNÇÃO QUE ENVIA EMAIL NOTIFICANDO AS CONTAS VENCENDO
+function enviarEmailAtrasado(nome, email, contas){
+
+    //Juntando os nomes das contas vencendo
+    var contasVencendoNotificar = ''
+    contas.forEach((contaa)=>{
+        contasVencendoNotificar = contasVencendoNotificar + `${contaa.nome} de ${contaa.valor} R$` + ' , '
+    })
+     
+    //enviando emal
+    transporter.sendMail({
+        from: user,
+        to: email,
+        subject: `Olá ${nome}! tem conta sua que já venceu!`,
+        html: `
+        
+            <div style='text-align:center; padding: 20px;'>
+                <p style='text-align:center;'>Suas contas que venceram são: <strong>${contasVencendoNotificar}</strong> fique atento!</p>
+
+                <a style='text-decoration: none;background-color: green;color: white;padding: 7px 15px;border-radius: 3px;margin-top: 15px;margin: 0 auto;' href="http://minhascontas.fun">Acessar contas</a>
+            </div>
+
+        `
+    }).then((info)=>{console.log('Email Enviado')}).catch(err => console.log(err))
+
+}
+
+
+
+
+
+
+
+
+
+
+
 //AGENDAMENTO DA FUNÇÃO BUSCAR CONTAS VENCENDO E ENVIAR EMAIL NOTIFICAÇÃO
-const task = cron.schedule('48 07 * * *', () => {
+const task = cron.schedule('00 09 * * *', () => {
     contasAtrasadas();
 });
 
@@ -1273,23 +1361,25 @@ module.exports = class ContasControllers {
             const {id, atual, nova, confirm} = req.body
             var senha = confirm
              
+            const dadosUser = await Users.findOne({raw:true, where:{ id: req.session.userid }});
 
-            const dadosUser = await Users.findOne({
-                include: {
-                    model: Contas
-                },
-                where: { id: req.session.userid },
-                order: [[Contas, 'dataOrdenar', 'ASC']]
-            });
+            if(atual == dadosUser.senha){
 
-             
-            //FAZER LÓGICA AQUI.................................................
-            console.log(dadosUser)
-            console.log(senha)
-            console.log(id)
-            console.log(atual)
-            console.log(nova)
-            //O USER ACIMA ESTA ESTRANHO!!!!!!!!!!!!!!!!!!!!!!!
+                    if(nova == senha){
+                        await Users.update({senha}, {where:{id:id}})
+                    }else{
+                        req.flash('senhaDiferente','.')
+                        res.render('mudarSenha', {dadosUser})
+                        return
+                    }
+
+            }else{
+                req.flash('senhaAntiga','.')
+                res.render('mudarSenha', {dadosUser})
+                return
+            }
+
+
 
 
 
@@ -1348,7 +1438,7 @@ module.exports = class ContasControllers {
             });
 
             req.flash('senhaAtualizado','.') 
-            res.render('home', {contasNaoPagas, temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
+            res.render('home', {contasNaoPagas, temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser})
         }
         
 }
