@@ -1,0 +1,100 @@
+<header id="header-home">
+    <div>
+        <span>{{dadosUser.nome}}</span>
+    </div>
+
+    <div>
+        <a href="/home">Contas</a> 
+        <span class="text-white mx-1" style="opacity: .3;">|</span>
+        <a href="/adicionar">Adicionar</a>
+    </div>
+</header>
+
+
+<div class="mb-4 d-flex justify-content-between">
+    <a class="btn-sair" href="/" class="text-secondary">Limpar filtro</a>
+</div>
+
+
+
+<main class="text-center" style="height: 65vh; overflow-y: auto;">
+
+    {{#if contasNaoPagas}}
+     <h5 class="text-success mb-4">Contas encontradas <br> para: <span class="text-danger">{{nomeOuData}}</span></h5>
+
+
+     <div class="container px-4">
+          <div class="row p-2 mb-4" style="background-color: #D9D9D9;">
+              <div class="col-5 text-dark text-start fw-bold">Conta</div>
+              <div class="col-3 text-dark text-start fw-bold">Vencimento</div>
+              <div class="col-4 text-dark text-end fw-bold">Valor</div>
+          </div>
+
+
+            {{#each contasNaoPagas}}
+            <form action="/verConta" method="post" class="mb-3">
+                <input type="hidden" value="{{this.id}}" name="idConta">
+
+                <button class="submit-click-conta" type="submit">
+                    <div class="row p-2" style="background-color: #d9d9d997;">
+                    <div style="font-size: 12px;" class="align-self-center col-5 text-dark text-start">{{this.nome}}</div>
+                    <div style="font-size: 12px;" class="align-self-center col-3 text-dark text-start">{{this.vencimento}}</div>
+                    <div style="font-size: 12px;" class="align-self-center col-4 text-dark text-end">{{this.valorParcela}} R$</div>
+                    </div>
+                </button>
+            </form>
+            {{/each}}
+
+            <div class="row p-2 mb-3 mt-4" style="background-color: #D9D9D9;">
+               <div class="col-12 text-dark text-start"><strong>Total do mês: </strong> <span class="text-success fw-bold">{{valorTotal}} R$</span></div>
+            </div>
+
+     </div>
+
+    {{else}}
+        <h5 class='mt-5 mb-3 text-secondary fs-5'>Nenhuma conta encontrada <br> para <span class="text-danger">{{nomeOuData}}</span>!</h6>
+
+        <a href="/adicionar" class="btn btn-success">Adicionar nova conta</a>
+    {{/if}}
+
+
+
+
+
+{{#if temContasPagas.tem}}
+
+     <div id="division"></div>
+
+      
+     <div id="pago" class="container px-3">
+        
+         <h4 class="text-success text-center mt-3 mb-4">Contas pagas este mês</h4>
+          
+        {{#each temContasPagas.contaGreen}}
+         <form action="/verConta" method="post" class="mb-2">
+            <input type="hidden" value="{{this.id}}" name="idConta">
+
+            <button class="submit-click-conta" type="submit">
+                <div class="row p-2" style="background-color: rgba(0, 128, 0, 0.322);">
+                    <div style="font-size: 12px;" class="align-self-center col-5 text-dark text-start">{{this.nome}}</div>
+                    <div style="font-size: 12px;" class="align-self-center col-3 text-dark text-start">{{this.vencimento}}</div>
+                    <div style="font-size: 12px;" class="align-self-center col-4 text-dark text-end">{{this.valor}} R$</div>
+                </div>
+            </button>
+         </form>
+        {{/each}}
+
+     </div>
+
+{{/if}}
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+
+
+
+</main>
+
+
+
+<footer id="footer-login" class="text-center py-3 mt-5 text-white">
+        © 2023 Todos os direitos reservados.Criado por <a href="http://freeladev.online" style="color: orangered">Freela Dev</a>
+</footer>
