@@ -1381,8 +1381,6 @@ module.exports = class ContasControllers {
 
 
 
-
-
             ///////////////////////////////////////////////////////////////////
 
             //Pega apenas as contas não pagas para mostrar no all
@@ -1439,6 +1437,21 @@ module.exports = class ContasControllers {
 
             req.flash('senhaAtualizado','.') 
             res.render('home', {contasNaoPagas, temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser})
+        }
+
+
+
+
+
+
+
+        //PESAQUISAR
+        static async pesquisar(req,res){
+              const {tipoFiltro, id, nomeConta, dataConta} = req.body
+
+              //VINDO TUDO CERTO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+              res.redirect('/')
         }
         
 }

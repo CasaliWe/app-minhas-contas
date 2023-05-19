@@ -235,13 +235,57 @@
 
 
 
+<!-- Modal filtro -->
+<div class="modal fade" id="modalFiltro" tabindex="-1" aria-labelledby="modalFiltro" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Busque por contas específicas</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <form action="/pesquisar" method="post">
+          <div class="modal-body">
+
+             <label class="w-100 text-center mb-3">
+                Buscar por: 
+                <select name="tipoFiltro" class="ms-2 btn btn-secondary btn-sm" onchange="mudarInputFiltro()">
+                    <option value="nome">Nome da conta</option>
+                    <option value="data">Data da conta</option>
+                </select>
+             </label>
+
+             <input type="hidden" name="id" value="{{dadosUser.id}}">
+
+             <div id="containerInputs">
+                 <input id="nomeConta" type="text" name="nomeConta" class="form-control" required>
+             </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            <button type="submit" class="btn btn-success">Buscar</button>
+          </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+<!-- Modal filtro -->
+
+
+
 
 
 
 <main class="text-center" style="height: 65vh; overflow-y: auto;">
 
     {{#if contasNaoPagas}}
-     <h1 class="text-success mb-5">Suas Contas:</h1>
+     <h1 class="text-success mb-4">Suas Contas:</h1>
+
+     <button type="button" class="btn btn-secondary mb-3" data-bs-toggle="modal" data-bs-target="#modalFiltro">FILTRAR</button>
+
 
      <div class="container px-4">
           <div class="row p-2 mb-4" style="background-color: #D9D9D9;">

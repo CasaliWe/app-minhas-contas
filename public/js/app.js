@@ -43,3 +43,19 @@ function abrirMenu(){
        document.getElementById('menu-escondido').style.cssText = 'width: 100%; transition: all 500ms;'
     }
 }
+
+
+
+//MUDAR O INPUT DO FILTRO
+var ativo = 1
+function mudarInputFiltro(){
+
+  if(ativo == 1){
+     document.getElementById('containerInputs').innerHTML = '<input type="date" name="dataConta" class="form-control" required>'
+     ativo = 2
+  }else{
+     document.getElementById('containerInputs').innerHTML = '<input type="text" name="nomeConta" class="form-control" required>'
+     ativo = 1
+  }
+
+}

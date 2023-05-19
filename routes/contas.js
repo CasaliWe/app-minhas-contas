@@ -81,4 +81,8 @@ router.post('/atualizarSenha', ContasControllers.atualizarSenha)
 
 
 
+//BUSCAR A PESQUISA DO FILTRO
+router.post('/pesquisar', ContasControllers.pesquisar)
+
+
 module.exports = router
