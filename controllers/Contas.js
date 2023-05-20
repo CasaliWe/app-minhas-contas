@@ -94,7 +94,7 @@ function enviarEmailAtrasado(nome, email, contas){
      
     //enviando emal
     transporter.sendMail({
-        from: user,
+        from: 'MINHAS CONTAS',
         to: email,
         subject: `Olá ${nome}! tem conta sua que já venceu!`,
         html: `
@@ -187,7 +187,7 @@ function enviarEmail(nome, email, contas){
      
     //enviando emal
     transporter.sendMail({
-        from: user,
+        from:'MINHAS CONTAS',
         to: email,
         subject: `Olá ${nome}! tem conta sua prestes a vencer!`,
         html: `
@@ -1459,42 +1459,15 @@ module.exports = class ContasControllers {
 
 
                     //Pega contas que já foram pagas
-                    const contasPagas = await Users.findOne({
-                        include: {
-                            model: Contas, 
-                            where:{pago: 'sim',  nome: {[Op.like]: `%${nomeConta}%`}}
-                        },
-                        where: { id:id },
-                        order: [[Contas, 'dataOrdenar', 'ASC']]
-                    });
-
+                    const contasPagas = await Contas.findAll({raw:true, where:{userId: id, nome: {[Op.like]: `%${nomeConta}%`}, pago: 'sim'}, order: [['dataOrdenar', 'ASC']]})
+                    console.log('oi')
                     var temContasPagas = {tem: false, contaGreen: ''}
 
-                    if(contasPagas){
+                    if(contasPagas.length > 0){
                         temContasPagas.tem = true
-                        temContasPagas.contaGreen = contasPagas.get({plain: true})
+                        temContasPagas.contaGreen = contasPagas
                     } else{
                         temContasPagas.tem = false
-                    }
-
-
-                    //Pegar contas que estão vencendo
-                    const contasVencendo = await Users.findOne({
-                        include: {
-                            model: Contas, 
-                            where:{vencendo: 'sim', nome: {[Op.like]: `%${nomeConta}%`}}
-                        },
-                        where: { id: id },
-                        order: [[Contas, 'dataOrdenar', 'ASC']]
-                    });
-
-                    var temContasVencendo = {tem: false, contaRed: ''}
-
-                    if(contasVencendo){
-                        temContasVencendo.tem = true
-                        temContasVencendo.contaRed = contasVencendo.get({plain: true})
-                    } else{
-                        temContasVencendo.tem = false
                     }
 
 
@@ -1506,7 +1479,7 @@ module.exports = class ContasControllers {
                             valorTotal = valorTotal + parseFloat(conta.valorParcela)
                     });
 
-                    res.render('pesquisa', {nomeOuData: nomeConta, contasNaoPagas, temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser})
+                    res.render('pesquisa', {nomeOuData: nomeConta, contasNaoPagas, temContasPagas, valorTotal, dadosUser})
               
                 }else{
 
@@ -1563,7 +1536,7 @@ module.exports = class ContasControllers {
 
                     var temContasPagas = {tem: false, contaGreen: ''}
 
-                    if(contasPagas){
+                    if(ids2.length > 0){
                         temContasPagas.tem = true
                         temContasPagas.contaGreen = contasPagas
                     } else{

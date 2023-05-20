@@ -28,7 +28,7 @@
 
             <div class="d-flex flex-column">
                 <span class="fw-bold fs-4">E-mail</span>
-                <span class="text-secondary fs-4">{{dadosUser.email}}</span>
+                <span class="text-secondary fs-6 w-50">{{dadosUser.email}}</span>
             </div>
         </div>
         
@@ -36,7 +36,7 @@
 
             <input type="hidden" name="id" value="{{dadosUser.id}}">
             
-            <input class="p-3 form-control" required type="text" placeholder="Atualize seu nome*" name="email">
+            <input class="p-3 form-control" required type="email" placeholder="Atualize seu nome*" name="email">
 
             <button type="submit" class="btn btn-success mt-4 btn-lg">Atualizar E-mail</button>
 

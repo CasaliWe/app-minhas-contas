@@ -1,3 +1,18 @@
+/*CONTAINER ALL*/
+#container-all{
+    width: 40%;
+    margin: 0 auto;
+}
+
+@media (max-width: 1000px){
+    #container-all{
+        width: 100%;
+    }
+}
+/*CONTAINER ALL*/
+
+
+
 .btn-sair{
     text-decoration: none;
     font-size: 17px;
@@ -235,12 +250,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.349);
+    background-color: rgba(0, 0, 0, 0.242);
     color: white;
 }
 
 #popup .content-popup, .popup-acoes .content-popup{
     width: 90%;
-    padding: 30px 10px;
+    padding: 35px 25px;
 }
 /*----------------------POP UPS--------------------*/
