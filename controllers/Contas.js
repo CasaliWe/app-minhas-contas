@@ -121,7 +121,7 @@ function enviarEmailAtrasado(nome, email, contas){
 
 
 //AGENDAMENTO DA FUNÇÃO BUSCAR CONTAS VENCENDO E ENVIAR EMAIL NOTIFICAÇÃO
-const task = cron.schedule('00 09 * * *', () => {
+const task = cron.schedule('24 15 * * *', () => {
     contasAtrasadas();
 });
 
