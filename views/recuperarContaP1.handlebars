@@ -1,0 +1,31 @@
+<div class="d-flex flex-column justify-content-between vh-100">
+    
+    <header id="header-login" class="text-white p-2 d-flex justify-content-center algin-items-center">
+        <span>Minhas Contas</span>
+        <img class="ms-2" src="/img/grana.png">
+    </header>
+    
+    
+    <main>
+        <div id="login">
+        
+            <h3 class="text-white fw-lighter mb-4">Recuperar sua conta</h3>
+        
+            <form action="/envioEmailRecuperarConta" method="post" class="d-flex flex-column">
+                <input class="mb-3 form-control" type="email" name="email" placeholder="Digite o email cadastrado*" required>
+        
+                <button type="submit" class="btn btn-secondary">Recuperar</button>
+                
+                {{#if messages.emailNaoExiste}}
+                <p class="text-center text-danger mt-2">Email não cadastrado em nosso sistema!</p>
+                {{/if}}
+            </form>
+        </div>
+    </main>
+    
+    
+    <footer id="footer-login" class="text-center py-3 text-white">
+         © 2023 Todos os direitos reservados.Criado por <a href="http://freeladev.online" style="color: orangered">Freela Dev</a>
+    </footer>
+
+</div>

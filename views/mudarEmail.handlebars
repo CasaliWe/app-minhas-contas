@@ -40,5 +40,8 @@
 
             <button type="submit" class="btn btn-success mt-4 btn-lg">Atualizar E-mail</button>
 
+            {{#if messages.emailExiste}}
+                <p class="text-center text-danger mt-3">E-mail já cadastrado!</p>
+            {{/if}}
         </form>
 </main>

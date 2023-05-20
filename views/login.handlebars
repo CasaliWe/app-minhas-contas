@@ -19,7 +19,15 @@
 
             {{#if messages.messagee}}
                <p class="text-danger mt-2">{{messages.messagee}}</p>
+
+               <a href="/recuperarConta" class="btn btn-light mt-1">Recuperar conta</a>
             {{/if}}
+
+
+            {{#if messages.senhaAtualizada}}
+               <p class="text-success mt-2">Sua senha foi atualizada!</p>
+            {{/if}}
+
         </div>
 
         <div id="criar-conta">

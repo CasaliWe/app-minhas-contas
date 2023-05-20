@@ -1171,6 +1171,17 @@ module.exports = class ContasControllers {
         static async atualizarUser(req,res){
             const {id, user} = req.body
 
+            const verificarUser = await Users.findOne({raw: true, where: {user:user}})
+            
+            //VERIFICAR SE EMAIL JÁ EXISTE
+            if(verificarUser != null){
+                const dadosUser = await Users.findOne({raw: true, where: {id: id}})
+                req.flash('userExiste','.') 
+                res.render('mudarUser', {dadosUser})
+                return
+            }
+
+
             await Users.update({user}, {where:{id:id}})
 
 
@@ -1264,6 +1275,18 @@ module.exports = class ContasControllers {
         //MUDAR EMAIL PARTE FINAL
         static async atualizarEmail(req,res){
             const {id, email} = req.body
+
+            const verificarEmail = await Users.findOne({raw: true, where: {email:email}})
+            
+            //VERIFICAR SE EMAIL JÁ EXISTE
+            if(verificarEmail != null){
+                const dadosUser = await Users.findOne({raw: true, where: {id: id}})
+                req.flash('emailExiste','.') 
+                res.render('mudarEmail', {dadosUser})
+                return
+            }
+
+
 
             await Users.update({email}, {where:{id:id}})
 
@@ -1555,6 +1578,76 @@ module.exports = class ContasControllers {
                     res.render('pesquisa', {temContasPagas, nomeOuData: dataFormatada, contasNaoPagas, valorTotal, dadosUser})
 
               }
+        }
+
+        
+
+
+
+        //RECUPERAR CONTA P1
+        static recuperarContaP1(req,res){
+              res.render('recuperarContaP1')
+        }
+
+
+        //ENVIAR EMAIL RECUPERAR CONTA
+        static async envioEmailRecuperarConta(req,res){
+             const email = req.body.email
+
+             const user = await Users.findOne({raw:true, where:{email:email}})
+
+             if(user == null){
+                req.flash('emailNaoExiste','.')
+                res.render('recuperarContaP1')
+                return
+             }
+
+             transporter.sendMail({
+                from: 'MINHAS CONTAS',
+                to: email,
+                subject: `Olá ${user.nome}! Vamos recuperar sua conta!`,
+                html: `
+                
+                    <div style='text-align:center; padding: 20px;'>
+                        <p style='text-align:center;'>Clique no botão abaixo para atualizar sua senha!</p>
+
+                        <a style='text-decoration: none;background-color: green;color: white;padding: 7px 15px;border-radius: 3px;margin-top: 15px;margin: 0 auto;' href="http://localhost:3000/finalRecuperarConta/${user.id}">Recuperar</a>
+                    </div>
+
+                `
+             }).then((info)=>{console.log('Email Enviado')}).catch(err => console.log(err))
+
+             //levar para pag avisdo enviado email
+             res.render('avisoEmailEnviado', {email})
+
+        }
+
+
+
+        //FINAL RECUPERAR CONTA
+        static async finalRecuperarConta(req,res){
+            const id = req.params.id
+
+            res.render('finalRecuperarConta', {id})
+        }
+
+
+
+        //SALVAR NOVA SENHA
+        static async salvarNovaSenha(req,res){
+           const {id, senha,confirm} = req.body
+
+           if(senha != confirm){
+              req.flash('senhasDiferentes','.')
+              res.render('finalRecuperarConta', {id})
+
+              return
+           }
+
+           await Users.update({senha},{where:{id:id}})
+          
+           req.flash('senhaAtualizada','.')
+           res.render('login')
         }
         
 }

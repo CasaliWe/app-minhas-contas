@@ -40,6 +40,10 @@
 
             <button type="submit" class="btn btn-success mt-4 btn-lg">Atualizar Usuário</button>
 
+            {{#if messages.userExiste}}
+                <p class="text-center text-danger mt-3">Usuário já cadastrado!</p>
+            {{/if}}
+
         </form>
 </main>
 

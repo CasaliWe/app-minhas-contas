@@ -85,4 +85,19 @@ router.post('/atualizarSenha', ContasControllers.atualizarSenha)
 router.post('/pesquisar', ContasControllers.pesquisar)
 
 
+
+
+//RECUPERAR CONTA P1
+router.get('/recuperarConta', ContasControllers.recuperarContaP1)
+
+//ENVIAR EMAIL RECUPERAR CONTA
+router.post('/envioEmailRecuperarConta', ContasControllers.envioEmailRecuperarConta)
+
+//FINAL RECUPERAÇÃO CONTA
+router.get('/finalRecuperarConta/:id', ContasControllers.finalRecuperarConta)
+
+//SALVAR NOVA SENHA BANCO
+router.post('/salvarNovaSenha', ContasControllers.salvarNovaSenha)
+
+
 module.exports = router
