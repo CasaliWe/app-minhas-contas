@@ -102,7 +102,7 @@ function enviarEmailAtrasado(nome, email, contas){
             <div style='text-align:center; padding: 20px;'>
                 <p style='text-align:center;'>Suas contas que venceram são: <strong>${contasVencendoNotificar}</strong> fique atento!</p>
 
-                <a style='text-decoration: none;background-color: green;color: white;padding: 7px 15px;border-radius: 3px;margin-top: 15px;margin: 0 auto;' href="http://minhascontas.fun">Acessar contas</a>
+                <a style='text-decoration: none;background-color: green;color: white;padding: 7px 15px;border-radius: 3px;margin-top: 15px;margin: 0 auto;' href="https://minhascontas.fun">Acessar contas</a>
             </div>
 
         `
@@ -195,7 +195,7 @@ function enviarEmail(nome, email, contas){
             <div style='text-align:center; padding: 20px;'>
                 <p style='text-align:center;'>Suas contas que vencerão daqui 2 dias são: <strong>${contasVencendoNotificar}</strong> fique atento!</p>
 
-                <a style='text-decoration: none;background-color: green;color: white;padding: 7px 15px;border-radius: 3px;margin-top: 15px;margin: 0 auto;' href="http://minhascontas.fun">Acessar contas</a>
+                <a style='text-decoration: none;background-color: green;color: white;padding: 7px 15px;border-radius: 3px;margin-top: 15px;margin: 0 auto;' href="https://minhascontas.fun">Acessar contas</a>
             </div>
 
         `
@@ -1611,7 +1611,7 @@ module.exports = class ContasControllers {
                     <div style='text-align:center; padding: 20px;'>
                         <p style='text-align:center;'>Clique no botão abaixo para atualizar sua senha!</p>
 
-                        <a style='text-decoration: none;background-color: green;color: white;padding: 7px 15px;border-radius: 3px;margin-top: 15px;margin: 0 auto;' href="http://localhost:3000/finalRecuperarConta/${user.id}">Recuperar</a>
+                        <a style='text-decoration: none;background-color: green;color: white;padding: 7px 15px;border-radius: 3px;margin-top: 15px;margin: 0 auto;' href="https://minhascontas.fun/finalRecuperarConta/${user.id}">Recuperar</a>
                     </div>
 
                 `
