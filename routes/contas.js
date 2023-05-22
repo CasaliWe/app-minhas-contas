@@ -28,6 +28,7 @@ router.post('/adicionarConta', ContasControllers.adicionarConta)
 
 //VER CONTA INDIVIDUAL
 router.post('/verConta', ContasControllers.verConta)
+router.get('/conta/:id', ContasControllers.contaDetalhes)
 
 //PAGO
 router.post('/pago', ContasControllers.pago)
@@ -83,6 +84,8 @@ router.post('/atualizarSenha', ContasControllers.atualizarSenha)
 
 //BUSCAR A PESQUISA DO FILTRO
 router.post('/pesquisar', ContasControllers.pesquisar)
+router.get('/pesquisaNome/:nome/:id', ContasControllers.exibirPesquisarNome)
+router.get('/pesquisaData/:data/:id', ContasControllers.exibirPesquisarData)
 
 
 

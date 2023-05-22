@@ -31,7 +31,7 @@ const adicionarActive = true
 
 
 
-
+/*
 
 //AGENDAMENTO DA FUNÇÃO BUSCAR CONTAS QUE JÁ VENCERAM E ENVIAR EMAIL NOTIFICAÇÃO
 const contasPassou = cron.schedule('00 09 * * *', () => {
@@ -81,7 +81,6 @@ async function contasPassadas() {
 }
 
 contasPassou.start();
-
 
 //FUNÇÃO QUE ENVIA EMAIL NOTIFICANDO AS CONTAS VENCENDO
 function enviarEmailAtrasado(nome, email, contas){
@@ -202,6 +201,8 @@ function enviarEmail(nome, email, contas){
     }).then((info)=>{console.log('Email Enviado')}).catch(err => console.log(err))
 
 }
+
+*/
 
 
 
@@ -410,75 +411,9 @@ module.exports = class ContasControllers {
              const senhaTesteLogin = await Users.findOne({raw: true, where: {senha: senha}})
 
              if(userTesteLogin != null && senhaTesteLogin != null){
-                //Pega os dados do user e as contas ordenadas
-                const dadosUser = await Users.findOne({
-                    include: {
-                        model: Contas
-                    },
-                    where: { id: userTesteLogin.id },
-                    order: [[Contas, 'dataOrdenar', 'ASC']]
-                });
-
-   
-                //Pega apenas as contas não pagas para mostrar no all
-                const contasNaoPagas = await Contas.findAll({raw:true, where:{userId: userTesteLogin.id, pago: 'não'}, order: [['dataOrdenar', 'ASC']]})
-
-
-                //Pega contas que já foram pagas
-                const contasPagas = await Users.findOne({
-                    include: {
-                        model: Contas, 
-                        where:{pago: 'sim'}
-                    },
-                    where: { id: userTesteLogin.id },
-                    order: [[Contas, 'dataOrdenar', 'ASC']]
-                });
-
-                var temContasPagas = {tem: false, contaGreen: ''}
-
-                if(contasPagas){
-                    temContasPagas.tem = true
-                    temContasPagas.contaGreen = contasPagas.get({plain: true})
-                } else{
-                    temContasPagas.tem = false
-                }
-
-
-
-                //Pegar contas que estão vencendo
-                const contasVencendo = await Users.findOne({
-                    include: {
-                        model: Contas, 
-                        where:{vencendo: 'sim'}
-                    },
-                    where: { id: userTesteLogin.id },
-                    order: [[Contas, 'dataOrdenar', 'ASC']]
-                });
-
-                var temContasVencendo = {tem: false, contaRed: ''}
-
-                if(contasVencendo){
-                    temContasVencendo.tem = true
-                    temContasVencendo.contaRed = contasVencendo.get({plain: true})
-                } else{
-                    temContasVencendo.tem = false
-                }
-
-
-
-
-                //LÓGICA PARA SOMAR O VALOR TOTAL DAS CONTAS
-                const contass = contasNaoPagas
-                let valorTotal = 0
-
-                contass.forEach((conta) => {
-                        valorTotal = valorTotal + parseFloat(conta.valorParcela)
-                });
-
-
                 req.session.userid = userTesteLogin.id 
                     req.session.save(()=>{
-                    res.render('home', {contasNaoPagas, temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
+                    res.redirect('/home')
                 })
              }else{
                 req.flash('messagee','Usuário ou senha incorreto!') 
@@ -717,6 +652,17 @@ module.exports = class ContasControllers {
         //VER CONTA ESPECIFICA COM OS DETALHES
         static async verConta(req,res){
             const id = req.body.idConta
+
+            if(req.session.userid){
+                res.redirect(`/conta/${id}`)
+            } else{
+                res.render('login')
+            }
+        }
+
+        //Rota get para ver detalhes da conta
+        static async contaDetalhes(req,res){
+            const id = req.params.id
 
             if(req.session.userid){
                 //Pega os dados do user
@@ -1472,112 +1418,128 @@ module.exports = class ContasControllers {
         static async pesquisar(req,res){
               const {tipoFiltro, id, nomeConta, dataConta} = req.body
 
-
               if(tipoFiltro == 'nome'){
-                    const dadosUser = await Users.findOne({raw:true, where:{id:id}})
-
-
-                    //Pega apenas as contas não pagas para mostrar no all
-                    const contasNaoPagas = await Contas.findAll({raw:true, where:{userId: id, nome: {[Op.like]: `%${nomeConta}%`}, pago: 'não'}, order: [['dataOrdenar', 'ASC']]})
-
-
-                    //Pega contas que já foram pagas
-                    const contasPagas = await Contas.findAll({raw:true, where:{userId: id, nome: {[Op.like]: `%${nomeConta}%`}, pago: 'sim'}, order: [['dataOrdenar', 'ASC']]})
-                    console.log('oi')
-                    var temContasPagas = {tem: false, contaGreen: ''}
-
-                    if(contasPagas.length > 0){
-                        temContasPagas.tem = true
-                        temContasPagas.contaGreen = contasPagas
-                    } else{
-                        temContasPagas.tem = false
-                    }
-
-
-                    //LÓGICA PARA SOMAR O VALOR TOTAL DAS CONTAS
-                    const contass = contasNaoPagas
-                    let valorTotal = 0
-
-                    contass.forEach((conta) => {
-                            valorTotal = valorTotal + parseFloat(conta.valorParcela)
-                    });
-
-                    res.render('pesquisa', {nomeOuData: nomeConta, contasNaoPagas, temContasPagas, valorTotal, dadosUser})
-              
+                    res.redirect(`/pesquisaNome/${nomeConta}/${id}`)
                 }else{
-
-                    const ids = []
-                    const ids2 = []
-                    var contasNaoPagas = []
-                    var contasPagas = []
-
-                    const dataa = new Date(dataConta)
-                    const dia = dataa.getDate() +1
-                    const mes = dataa.getMonth() +1
-                    const ano = dataa.getFullYear()
-                    const dataFormatada = `${dia}/${mes}/${ano}`
-                    
-                    const dadosUser = await Users.findOne({raw:true, where:{id:id}})
-
-                    //Pega apenas as contas não pagas para mostrar no all
-                    const allContasNaoPagas = await Contas.findAll({raw:true, where:{userId: id, pago: 'não'}, order: [['dataOrdenar', 'ASC']]})
-
-                    allContasNaoPagas.forEach((conta)=>{
-                        var diaa = conta.dataOrdenar.getDate() +1
-                        var mess = conta.dataOrdenar.getMonth() +1 
-                        var anoo = conta.dataOrdenar.getFullYear()
-
-                        if(diaa == dia && mess == mes && anoo == ano){
-                            ids.push(conta.id)
-                        }
-                    })
-
-                    if(ids.length > 0){
-                        contasNaoPagas = await Contas.findAll({raw:true, where:{id: { [Op.in]: ids }, pago: 'não'}, order: [['dataOrdenar', 'ASC']]})
-                    }
-
-
-
-                    
-                    //Pega contas que já foram pagas
-                    const allContasPagas = await Contas.findAll({raw:true, where:{userId: id, pago: 'sim'}, order: [['dataOrdenar', 'ASC']]})
-                   
-                    allContasPagas.forEach((conta)=>{
-                        var diaaa = conta.dataOrdenar.getDate() +1
-                        var messs = conta.dataOrdenar.getMonth() +1 
-                        var anooo = conta.dataOrdenar.getFullYear()
-
-                        if(diaaa == dia && messs == mes && anooo == ano){
-                            ids2.push(conta.id)
-                        }
-                    })
-
-                    if(ids2.length > 0){
-                        contasPagas = await Contas.findAll({raw:true, where:{id: { [Op.in]: ids2 }}, order: [['dataOrdenar', 'ASC']]})
-                    }
-
-
-                    var temContasPagas = {tem: false, contaGreen: ''}
-
-                    if(ids2.length > 0){
-                        temContasPagas.tem = true
-                        temContasPagas.contaGreen = contasPagas
-                    } else{
-                        temContasPagas.tem = false
-                    }
-
-
-                    //LÓGICA PARA SOMAR O VALOR TOTAL DAS CONTAS
-                    const contass = contasNaoPagas
-                    let valorTotal = 0
-
-                    contass.forEach((conta) => {
-                            valorTotal = valorTotal + parseFloat(conta.valorParcela)
-                    });
-
-                    res.render('pesquisa', {temContasPagas, nomeOuData: dataFormatada, contasNaoPagas, valorTotal, dadosUser})
-
+                    res.redirect(`/pesquisaData/${dataConta}/${id}`)
               }
+        }
+        
+
+        //GET PARA EXIBIR PESQUISA DO NOME
+        static async exibirPesquisarNome(req,res){
+            const nomeConta = req.params.nome
+            const id = req.params.id
+
+
+            const dadosUser = await Users.findOne({raw:true, where:{id:id}})
+
+            //Pega apenas as contas não pagas para mostrar no all
+            const contasNaoPagas = await Contas.findAll({raw:true, where:{userId: id, nome: {[Op.like]: `%${nomeConta}%`}, pago: 'não'}, order: [['dataOrdenar', 'ASC']]})
+
+
+            //Pega contas que já foram pagas
+            const contasPagas = await Contas.findAll({raw:true, where:{userId: id, nome: {[Op.like]: `%${nomeConta}%`}, pago: 'sim'}, order: [['dataOrdenar', 'ASC']]})
+            console.log('oi')
+            var temContasPagas = {tem: false, contaGreen: ''}
+
+            if(contasPagas.length > 0){
+                temContasPagas.tem = true
+                temContasPagas.contaGreen = contasPagas
+            } else{
+                temContasPagas.tem = false
+            }
+
+
+            //LÓGICA PARA SOMAR O VALOR TOTAL DAS CONTAS
+            const contass = contasNaoPagas
+            let valorTotal = 0
+
+            contass.forEach((conta) => {
+                    valorTotal = valorTotal + parseFloat(conta.valorParcela)
+            });
+
+            res.render('pesquisa', {nomeOuData: nomeConta, contasNaoPagas, temContasPagas, valorTotal, dadosUser})
+          
+        }
+
+
+        //GET PARA EXIBIR PESQUISA DA DATA
+        static async exibirPesquisarData(req,res){
+            const dataConta = req.params.data
+            const id = req.params.id
+
+
+            const ids = []
+            const ids2 = []
+            var contasNaoPagas = []
+            var contasPagas = []
+
+            const dataa = new Date(dataConta)
+            const dia = dataa.getDate() +1
+            const mes = dataa.getMonth() +1
+            const ano = dataa.getFullYear()
+            const dataFormatada = `${dia}/${mes}/${ano}`
+            
+            const dadosUser = await Users.findOne({raw:true, where:{id:id}})
+
+            //Pega apenas as contas não pagas para mostrar no all
+            const allContasNaoPagas = await Contas.findAll({raw:true, where:{userId: id, pago: 'não'}, order: [['dataOrdenar', 'ASC']]})
+
+            allContasNaoPagas.forEach((conta)=>{
+                var diaa = conta.dataOrdenar.getDate() +1
+                var mess = conta.dataOrdenar.getMonth() +1 
+                var anoo = conta.dataOrdenar.getFullYear()
+
+                if(diaa == dia && mess == mes && anoo == ano){
+                    ids.push(conta.id)
+                }
+            })
+
+            if(ids.length > 0){
+                contasNaoPagas = await Contas.findAll({raw:true, where:{id: { [Op.in]: ids }, pago: 'não'}, order: [['dataOrdenar', 'ASC']]})
+            }
+
+
+
+            
+            //Pega contas que já foram pagas
+            const allContasPagas = await Contas.findAll({raw:true, where:{userId: id, pago: 'sim'}, order: [['dataOrdenar', 'ASC']]})
+        
+            allContasPagas.forEach((conta)=>{
+                var diaaa = conta.dataOrdenar.getDate() +1
+                var messs = conta.dataOrdenar.getMonth() +1 
+                var anooo = conta.dataOrdenar.getFullYear()
+
+                if(diaaa == dia && messs == mes && anooo == ano){
+                    ids2.push(conta.id)
+                }
+            })
+
+            if(ids2.length > 0){
+                contasPagas = await Contas.findAll({raw:true, where:{id: { [Op.in]: ids2 }}, order: [['dataOrdenar', 'ASC']]})
+            }
+
+
+            var temContasPagas = {tem: false, contaGreen: ''}
+
+            if(ids2.length > 0){
+                temContasPagas.tem = true
+                temContasPagas.contaGreen = contasPagas
+            } else{
+                temContasPagas.tem = false
+            }
+
+
+            //LÓGICA PARA SOMAR O VALOR TOTAL DAS CONTAS
+            const contass = contasNaoPagas
+            let valorTotal = 0
+
+            contass.forEach((conta) => {
+                    valorTotal = valorTotal + parseFloat(conta.valorParcela)
+            });
+
+            res.render('pesquisa', {temContasPagas, nomeOuData: dataFormatada, contasNaoPagas, valorTotal, dadosUser})
         }
 
         

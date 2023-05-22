@@ -25,7 +25,6 @@ function apenasNumeros(event) {
       document.querySelector('.popup-acoes').style.cssText = 'opacity: 0; transition: all 600ms;'
       setTimeout(() => {
         document.querySelector('.popup-acoes').style.cssText = 'display: none;'
-        window.location.href = 'http://minhascontas.fun/home'
       }, 700);
   }
 
