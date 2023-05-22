@@ -31,107 +31,20 @@ const adicionarActive = true
 
 
 
-/*
 
-//AGENDAMENTO DA FUNÇÃO BUSCAR CONTAS QUE JÁ VENCERAM E ENVIAR EMAIL NOTIFICAÇÃO
-const contasPassou = cron.schedule('00 09 * * *', () => {
-    contasPassadas();
-});
-
-async function contasPassadas() {
-
-    const ids = []
-    const userIds = []
-      
-    const coontas = await Contas.findAll({raw:true, where:{lembrete: 'sim', pago:'não', vencendo: 'sim'}})
-    coontas.forEach((conta)=>{
-        
-        //Pegando a data do banco e separando o mês e o dia
-        var dataBanco = conta.dataOrdenar
-        var mesBanco = dataBanco.getMonth() + 1
-        var diaBanco = dataBanco.getDate() + 1
-        
-        //Pegando a data atual e separando o mês e o dia
-        var dataAtual = new Date()
-        var mesAtual = dataAtual.getMonth() + 1
-        var diaAtual = dataAtual.getDate() 
-        
-        //Verifica se a data do banco está 2 dias a frente para fazer o lembrete
-        if(mesAtual >= mesBanco && diaAtual > diaBanco){
-            ids.push(conta.id)
-            userIds.push(conta.userId)
-        }
-    })
-    
-
-    //PEGANDO O USER PARA TER O EMAIL E TRAZENDO AS CONTAS VENCENDO
-    if(userIds.length != 0){
-        //FILTRANDO O ARRAY DE USERID PARA QUE NÃO REPITA USERIDS
-        const userIdsFiltrado = userIds.filter((valor, indice, array) => {
-            return array.indexOf(valor) === indice;
-        });
-
-        const allDados = await Users.findAll({include: {model: Contas, where:{id: { [Op.in]: ids }}}, where:{id: { [Op.in]: userIdsFiltrado }}})
-        const dadosConvertidos = allDados.map((result)=> result.get({plain:true}))
-        //CHAMANDO A FUNÇÃO QUE ENVIA EMAIL NOTIFICANDO DAS CONTAS VENCENDO
-        dadosConvertidos.forEach((userNotificar)=>{
-            enviarEmailAtrasado(userNotificar.nome,userNotificar.email,userNotificar.contas)
-        })
-    }
-}
-
-contasPassou.start();
-
-//FUNÇÃO QUE ENVIA EMAIL NOTIFICANDO AS CONTAS VENCENDO
-function enviarEmailAtrasado(nome, email, contas){
-
-    //Juntando os nomes das contas vencendo
-    var contasVencendoNotificar = ''
-    contas.forEach((contaa)=>{
-        contasVencendoNotificar = contasVencendoNotificar + `${contaa.nome} de ${contaa.valor} R$` + ' , '
-    })
-     
-    //enviando emal
-    transporter.sendMail({
-        from: 'MINHAS CONTAS',
-        to: email,
-        subject: `Olá ${nome}! tem conta sua que já venceu!`,
-        html: `
-        
-            <div style='text-align:center; padding: 20px;'>
-                <p style='text-align:center;'>Suas contas que venceram são: <strong>${contasVencendoNotificar}</strong> fique atento!</p>
-
-                <a style='text-decoration: none;background-color: green;color: white;padding: 7px 15px;border-radius: 3px;margin-top: 15px;margin: 0 auto;' href="https://minhascontas.fun">Acessar contas</a>
-            </div>
-
-        `
-    }).then((info)=>{console.log('Email Enviado')}).catch(err => console.log(err))
-
-}
-
-
-
-
-
-
-
-
-
-
-
-//AGENDAMENTO DA FUNÇÃO BUSCAR CONTAS VENCENDO E ENVIAR EMAIL NOTIFICAÇÃO
-const task = cron.schedule('24 15 * * *', () => {
+//----------AGENDAMENTO DA FUNÇÃO BUSCAR CONTAS VENCENDO E ENVIAR EMAIL NOTIFICAÇÃO---------------
+const task = cron.schedule('30 11 * * *', () => {
     contasAtrasadas();
 });
 
-async function contasAtrasadas() {
+async function contasAtrasadas(){
 
     const ids = []
-    const userIds = []
-      
-    const coontas = await Contas.findAll({raw:true, where:{lembrete: 'sim', pago:'não', vencendo: 'não'}})
-    coontas.forEach((conta)=>{
-        
+    const idsContas = []
+    var vencendo = 'sim'
+
+    const allContasVencendo = await Contas.findAll({raw:true, where:{vencendo: 'não', pago:'não', lembrete:'sim'}})
+    allContasVencendo.forEach((conta)=>{
         //Pegando a data do banco e separando o mês e o dia
         var dataBanco = conta.dataOrdenar
         var mesBanco = dataBanco.getMonth() + 1
@@ -142,48 +55,74 @@ async function contasAtrasadas() {
         var mesAtual = dataAtual.getMonth() + 1
         var diaAtual = dataAtual.getDate() 
         
-        //Verifica se a data do banco está 2 dias a frente para fazer o lembrete
+        //Verifica se a data do banco está 2 dias a frente
         if(mesAtual == mesBanco && diaAtual +2 == diaBanco){
-            ids.push(conta.id)
-            userIds.push(conta.userId)
+            ids.push(conta.userId)
+            idsContas.push(conta.id)
         }
     })
 
-    
-    const vencendo = 'sim'
-    if(ids.length != 0){
-        await Contas.update({vencendo}, {where:{id: { [Op.in]: ids }}})
-    }
-    
+    await Contas.update({vencendo}, {where:{id: { [Op.in]: idsContas }}})
 
-    //PEGANDO O USER PARA TER O EMAIL E TRAZENDO AS CONTAS VENCENDO
-    if(userIds.length != 0){
-        //FILTRANDO O ARRAY DE USERID PARA QUE NÃO REPITA USERIDS
-        const userIdsFiltrado = userIds.filter((valor, indice, array) => {
-            return array.indexOf(valor) === indice;
-        });
 
-        const allDados = await Users.findAll({include: {model: Contas, where:{vencendo:'sim'}}, where:{id: { [Op.in]: userIdsFiltrado }}})
-        const dadosConvertidos = allDados.map((result)=> result.get({plain:true}))
-        //CHAMANDO A FUNÇÃO QUE ENVIA EMAIL NOTIFICANDO DAS CONTAS VENCENDO
-        dadosConvertidos.forEach((userNotificar)=>{
-            enviarEmail(userNotificar.nome,userNotificar.email,userNotificar.contas)
+
+    const idsFiltrado = ids.filter((valor, indice, array) => {
+        return array.indexOf(valor) === indice;
+    });
+
+
+    const allUsersGet = await Users.findAll({include:{model:Contas, where:{lembrete: 'sim', pago:'não'}}, where:{id: { [Op.in]: ids }}})
+    const allUsers =  allUsersGet.map((result)=> result.get({plain:true}))
+
+
+
+    var usersNotificar = []
+    allUsers.forEach((user)=>{
+
+        var usuario = {nome: user.nome, email: user.email, contas:[]}
+
+        user.contas.forEach((conta)=>{
+            //Pegando a data do banco e separando o mês e o dia
+            var dataBanco = conta.dataOrdenar
+            var mesBanco = dataBanco.getMonth() + 1
+            var diaBanco = dataBanco.getDate() + 1
+            
+            //Pegando a data atual e separando o mês e o dia
+            var dataAtual = new Date()
+            var mesAtual = dataAtual.getMonth() + 1
+            var diaAtual = dataAtual.getDate() 
+            
+            //Verifica se a data do banco está 2 dias a frente
+            if(mesAtual == mesBanco && diaAtual +2 == diaBanco){
+                var contaVencendo = {nome: conta.nome, valor: conta.valor}
+                usuario.contas.push(contaVencendo)
+            }
         })
-    }
+
+        usersNotificar.push(usuario)
+
+    })
+
+
+
+    usersNotificar.forEach((userr)=>{
+         var stringMsg = ''
+
+         userr.contas.forEach((contaa)=>{
+             stringMsg += `${contaa.nome} no valor de ${contaa.valor} R$, ` 
+         })
+
+         enviarEmail(userr.nome, userr.email, stringMsg);
+    })
+
 }
 
 task.start();
 
 
 //FUNÇÃO QUE ENVIA EMAIL NOTIFICANDO AS CONTAS VENCENDO
-function enviarEmail(nome, email, contas){
+function enviarEmail(nome, email, msg){
 
-    //Juntando os nomes das contas vencendo
-    var contasVencendoNotificar = ''
-    contas.forEach((contaa)=>{
-        contasVencendoNotificar = contasVencendoNotificar + `${contaa.nome} de ${contaa.valor} R$` + ' , '
-    })
-     
     //enviando emal
     transporter.sendMail({
         from:'MINHAS CONTAS',
@@ -192,18 +131,16 @@ function enviarEmail(nome, email, contas){
         html: `
         
             <div style='text-align:center; padding: 20px;'>
-                <p style='text-align:center;'>Suas contas que vencerão daqui 2 dias são: <strong>${contasVencendoNotificar}</strong> fique atento!</p>
+                <p style='text-align:center;'>Suas contas que vencerão daqui 2 dias são: <strong>${msg}</strong> fique atento!</p>
 
                 <a style='text-decoration: none;background-color: green;color: white;padding: 7px 15px;border-radius: 3px;margin-top: 15px;margin: 0 auto;' href="https://minhascontas.fun">Acessar contas</a>
             </div>
 
         `
-    }).then((info)=>{console.log('Email Enviado')}).catch(err => console.log(err))
+    }).then((info)=>{console.log(`Email enviado para ${email}`)}).catch(err => console.log(err))
 
 }
-
-*/
-
+//----------AGENDAMENTO DA FUNÇÃO BUSCAR CONTAS VENCENDO E ENVIAR EMAIL NOTIFICAÇÃO---------------
 
 
 
@@ -212,8 +149,8 @@ function enviarEmail(nome, email, contas){
 
 
 
-//AGENDAMENTO DE ATUALIZAÇÃO DE CONTAS PAGAS TODO DIA 1 DE CADA MÊS;
-const task2 = cron.schedule('20 00 * * *', () => {
+//----------------AGENDAMENTO DE ATUALIZAÇÃO DE CONTAS PAGAS TODO DIA 1 DE CADA MÊS-----------------
+const task2 = cron.schedule('20 03 * * *', () => {
     ReiniciarContasPagas();
 });
 
@@ -333,6 +270,8 @@ module.exports = class ContasControllers {
                 contass.forEach((conta) => {
                      valorTotal = valorTotal + parseFloat(conta.valorParcela)
                 });
+
+                valorTotal = valorTotal.toFixed(2)
 
 
 
@@ -493,6 +432,8 @@ module.exports = class ContasControllers {
                         valorTotal = valorTotal + parseFloat(conta.valorParcela)
                 });
 
+                valorTotal = valorTotal.toFixed(2)
+
 
                 res.render('home', {contasNaoPagas, temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
             } else{
@@ -643,6 +584,8 @@ module.exports = class ContasControllers {
                         valorTotal = valorTotal + parseFloat(conta.valorParcela)
                 });
 
+                valorTotal = valorTotal.toFixed(2)
+
                 req.flash('criado','.') 
                 res.render('home', {contasNaoPagas, temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
         }
@@ -784,6 +727,8 @@ module.exports = class ContasControllers {
                     valorTotal = valorTotal + parseFloat(conta.valorParcela)
             });
 
+            valorTotal = valorTotal.toFixed(2)
+
             req.flash('pago','.') 
             res.render('home', {contasNaoPagas, temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
         }
@@ -907,6 +852,8 @@ module.exports = class ContasControllers {
                     valorTotal = valorTotal + parseFloat(conta.valorParcela)
             });
 
+            valorTotal = valorTotal.toFixed(2)
+
             req.flash('editado','.') 
             res.render('home', {contasNaoPagas, temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
         }
@@ -985,6 +932,8 @@ module.exports = class ContasControllers {
             contass.forEach((conta) => {
                     valorTotal = valorTotal + parseFloat(conta.valorParcela)
             });
+
+            valorTotal = valorTotal.toFixed(2)
 
             req.flash('deletado','.') 
             res.render('home', {contasNaoPagas, temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
@@ -1086,6 +1035,8 @@ module.exports = class ContasControllers {
             contass.forEach((conta) => {
                     valorTotal = valorTotal + parseFloat(conta.valorParcela)
             });
+
+            valorTotal = valorTotal.toFixed(2)
 
             req.flash('nomeAtualizado','.') 
             res.render('home', {contasNaoPagas, temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
@@ -1193,6 +1144,8 @@ module.exports = class ContasControllers {
                     valorTotal = valorTotal + parseFloat(conta.valorParcela)
             });
 
+            valorTotal = valorTotal.toFixed(2)
+
             req.flash('userAtualizado','.') 
             res.render('home', {contasNaoPagas, temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
         }
@@ -1299,6 +1252,8 @@ module.exports = class ContasControllers {
                     valorTotal = valorTotal + parseFloat(conta.valorParcela)
             });
 
+            valorTotal = valorTotal.toFixed(2)
+
             req.flash('emailAtualizado','.') 
             res.render('home', {contasNaoPagas, temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})})
         }
@@ -1404,6 +1359,8 @@ module.exports = class ContasControllers {
                     valorTotal = valorTotal + parseFloat(conta.valorParcela)
             });
 
+            valorTotal = valorTotal.toFixed(2)
+
             req.flash('senhaAtualizado','.') 
             res.render('home', {contasNaoPagas, temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser})
         }
@@ -1458,6 +1415,8 @@ module.exports = class ContasControllers {
             contass.forEach((conta) => {
                     valorTotal = valorTotal + parseFloat(conta.valorParcela)
             });
+
+            valorTotal = valorTotal.toFixed(2)
 
             res.render('pesquisa', {nomeOuData: nomeConta, contasNaoPagas, temContasPagas, valorTotal, dadosUser})
           
@@ -1538,6 +1497,8 @@ module.exports = class ContasControllers {
             contass.forEach((conta) => {
                     valorTotal = valorTotal + parseFloat(conta.valorParcela)
             });
+
+            valorTotal = valorTotal.toFixed(2)
 
             res.render('pesquisa', {temContasPagas, nomeOuData: dataFormatada, contasNaoPagas, valorTotal, dadosUser})
         }
