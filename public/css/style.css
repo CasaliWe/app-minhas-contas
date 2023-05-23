@@ -1,18 +1,3 @@
-/*CONTAINER ALL*/
-#container-all{
-    width: 40%;
-    margin: 0 auto;
-}
-
-@media (max-width: 1000px){
-    #container-all{
-        width: 100%;
-    }
-}
-/*CONTAINER ALL*/
-
-
-
 .btn-sair{
     text-decoration: none;
     font-size: 17px;
@@ -22,6 +7,13 @@
 }
 .btn-sair img{
     width: 30px;
+}
+
+
+@media(min-width:991px){
+    .container-btn-esquerdo-top-all{
+        padding-left: 22%;
+    }
 }
 
 
@@ -123,9 +115,9 @@
 }
 
 
-@media(min-width:800px){
+@media(min-width:991px){
     #login{
-        width: 35% !important;
+        width: 25% !important;
     }
 }
 /*-------------------LOGIN---------------------*/
@@ -165,9 +157,9 @@
 }
 
 
-@media(min-width:800px){
+@media(min-width:991px){
     #register{
-        width: 35% !important;
+        width: 25% !important;
     }
 }
 /*---------------------REGISTER----------------------*/
@@ -178,6 +170,17 @@
 
 
 /*------------------------HOME----------------------*/
+.main-content{
+    height: 65vh; 
+    overflow-y: auto;
+}
+@media(min-width:991px){
+    .main-content{
+        height: 90vh; 
+    }
+}
+
+
 #header-home{
     background-color: #000000d7;
     padding: 20px;
@@ -185,6 +188,11 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
+}
+@media(min-width:900px){
+    #header-home{
+        justify-content: space-around;
+    }
 }
 
 #header-home span{
@@ -218,6 +226,20 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
+}
+
+@media(min-width:900px){
+    #header-adicionar{
+        justify-content: space-around;
+    }
+
+    .container-btn-voltar-adicionar{
+        padding-left: 15%;
+    }
+
+    .content-adicionar{
+        height: 80vh;
+    }
 }
 
 #header-adicionar span{
@@ -258,4 +280,107 @@
     width: 90%;
     padding: 35px 25px;
 }
+@media(min-width:900px){
+    #popup .content-popup, .popup-acoes .content-popup{
+        width: 60%;
+    }
+}
 /*----------------------POP UPS--------------------*/
+
+
+
+/*--------------------PESQUISA-------------------*/
+#footer-pesquisa{
+    background-color: #000000d7;
+    font-size: 12px;
+}
+
+#footer-pesquisa a{
+    text-decoration: none;
+}
+
+
+@media(min-width:991px){
+    .container-limpar-filtro{
+         padding-left: 22%;
+    }
+
+    #footer-pesquisa{
+        background-color: #000000d7;
+        font-size: 12px;
+        position: absolute;
+        bottom: 0px;
+        width: 100%;
+    }
+    
+    #footer-pesquisa a{
+        text-decoration: none;
+    }
+}
+/*--------------------PESQUISA-------------------*/
+
+
+
+
+/*------------------VER CONTA---------------*/
+#footer-verConta{
+    background-color: #000000d7;
+    font-size: 12px;
+}
+
+#footer-verConta a{
+    text-decoration: none;
+}
+
+.content-ver-conta p{
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+    padding: 0px !important;
+}
+
+@media(min-width:991px){
+    .content-ver-conta{
+        height: 100vh !important;
+    }
+
+    .content-ver-conta p{
+         margin: 0 auto;
+         width: 50%;
+         text-align: center;
+         padding: 0px !important;
+    }
+
+    .container-btn-voltar-ver-conta{
+        padding-left: 22%;
+    }
+
+    #footer-verConta{
+        background-color: #000000d7;
+        font-size: 12px;
+        width: 100%;
+    }
+    
+    #footer-verConta a{
+        text-decoration: none;
+    }
+}
+
+@media(min-width:1800px){
+    .content-ver-conta{
+        padding-top: 100px;
+        height: 80vh !important;
+    }
+}
+/*------------------VER CONTA---------------*/
+
+
+
+
+/*---------------------EDITAR---------------------*/
+@media(min-width:991px){
+    .content-editar{
+        height: 80vh;
+    }
+}
+/*---------------------EDITAR---------------------*/

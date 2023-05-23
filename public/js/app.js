@@ -20,6 +20,7 @@ function apenasNumeros(event) {
   }
 
 
+
   //FECHAR POPUP
   function fecharModal(){
       document.querySelector('.popup-acoes').style.cssText = 'opacity: 0; transition: all 600ms;'
@@ -27,6 +28,7 @@ function apenasNumeros(event) {
         document.querySelector('.popup-acoes').style.cssText = 'display: none;'
       }, 700);
   }
+
 
 
 
@@ -43,6 +45,7 @@ function abrirMenu(){
        document.getElementById('menu-escondido').style.cssText = 'width: 100%; transition: all 500ms;'
     }
 }
+
 
 
 

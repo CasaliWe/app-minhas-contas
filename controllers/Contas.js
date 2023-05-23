@@ -31,7 +31,6 @@ const adicionarActive = true
 
 
 
-
 //----------AGENDAMENTO DA FUNÇÃO BUSCAR CONTAS VENCENDO E ENVIAR EMAIL NOTIFICAÇÃO---------------
 const task = cron.schedule('30 11 * * *', () => {
     contasAtrasadas();
@@ -148,9 +147,8 @@ function enviarEmail(nome, email, msg){
 
 
 
-
 //----------------AGENDAMENTO DE ATUALIZAÇÃO DE CONTAS PAGAS TODO DIA 1 DE CADA MÊS-----------------
-const task2 = cron.schedule('20 03 * * *', () => {
+const task2 = cron.schedule('15 03 * * *', () => {
     ReiniciarContasPagas();
 });
 
@@ -159,6 +157,8 @@ function ReiniciarContasPagas(){
 
        const hoje = new Date()
        const day = hoje.getDate()
+
+       console.log(day)
        
        if(day == 1){
             resetPago();
@@ -751,7 +751,6 @@ module.exports = class ContasControllers {
 
 
 
-        
         //FINALIZA A EDIÇÃO DA CONTA
         static async finalizarEdit(req,res){
             const {idConta, nome, valor, parcela, vencimento, lembrete} = req.body
