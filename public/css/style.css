@@ -1,107 +1,3 @@
-
-
-
-/*-----------------------------------------RESPONSIVO-----------------------------------------*/
-@media(max-width:991px){
-    .content-editar{
-        height: 80vh;
-    }
-
-    .content-ver-conta{
-        padding-top: 100px;
-        height: 80vh !important;
-    }
-
-    .content-ver-conta{
-        height: 100vh !important;
-    }
-
-    .content-ver-conta p{
-         margin: 0 auto;
-         width: 50%;
-         text-align: center;
-         padding: 0px !important;
-    }
-
-    .container-btn-voltar-ver-conta{
-        padding-left: 22%;
-    }
-
-    #footer-verConta{
-        background-color: #000000d7;
-        font-size: 12px;
-        width: 100%;
-    }
-    
-    #footer-verConta a{
-        text-decoration: none;
-    }
-
-    .container-limpar-filtro{
-        padding-left: 22%;
-    }
-
-    #footer-pesquisa{
-       background-color: #000000d7;
-       font-size: 12px;
-       position: absolute;
-       bottom: 0px;
-       width: 100%;
-    }
-   
-    #footer-pesquisa a{
-       text-decoration: none;
-    }
-
-    #popup .content-popup, .popup-acoes .content-popup{
-        width: 60%;
-    }
-
-    #header-adicionar{
-        justify-content: space-around;
-    }
-
-    .container-btn-voltar-adicionar{
-        padding-left: 15%;
-    }
-
-    .content-adicionar{
-        height: 80vh;
-    }
-
-    #header-home{
-        justify-content: space-around;
-    }
-
-    .main-content{
-        height: 90vh; 
-    }
-
-    #register{
-        width: 25% !important;
-    }
-
-    #login{
-        width: 25% !important;
-    }
-
-    .container-btn-esquerdo-top-all{
-        padding-left: 22%;
-    }
-
-}
-/*-----------------------------------------RESPONSIVO-----------------------------------------*/
-
-
-
-
-
-
-
-
-
-
-
 .btn-sair{
     text-decoration: none;
     font-size: 17px;
@@ -109,9 +5,15 @@
     margin-top: 5px;
     margin-left: 17px;
 }
-
 .btn-sair img{
     width: 30px;
+}
+
+
+@media(min-width:991px){
+    .container-btn-esquerdo-top-all{
+        padding-left: 22%;
+    }
 }
 
 
@@ -211,6 +113,13 @@
 #footer-login a{
     text-decoration: none;
 }
+
+
+@media(min-width:991px){
+    #login{
+        width: 25% !important;
+    }
+}
 /*-------------------LOGIN---------------------*/
 
 
@@ -246,6 +155,13 @@
     margin-left: 10px;
     text-decoration: none;
 }
+
+
+@media(min-width:991px){
+    #register{
+        width: 25% !important;
+    }
+}
 /*---------------------REGISTER----------------------*/
 
 
@@ -258,15 +174,25 @@
     height: 65vh; 
     overflow-y: auto;
 }
+@media(min-width:991px){
+    .main-content{
+        height: 90vh; 
+    }
+}
 
 
 #header-home{
-    background-color: red;
+    background-color: #000000d7;
     padding: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
+}
+@media(min-width:900px){
+    #header-home{
+        justify-content: space-around;
+    }
 }
 
 #header-home span{
@@ -302,6 +228,19 @@
     margin-bottom: 10px;
 }
 
+@media(min-width:900px){
+    #header-adicionar{
+        justify-content: space-around;
+    }
+
+    .container-btn-voltar-adicionar{
+        padding-left: 15%;
+    }
+
+    .content-adicionar{
+        height: 80vh;
+    }
+}
 
 #header-adicionar span{
     color: white;
@@ -341,6 +280,11 @@
     width: 90%;
     padding: 35px 25px;
 }
+@media(min-width:900px){
+    #popup .content-popup, .popup-acoes .content-popup{
+        width: 60%;
+    }
+}
 /*----------------------POP UPS--------------------*/
 
 
@@ -353,6 +297,25 @@
 
 #footer-pesquisa a{
     text-decoration: none;
+}
+
+
+@media(min-width:991px){
+    .container-limpar-filtro{
+         padding-left: 22%;
+    }
+
+    #footer-pesquisa{
+        background-color: #000000d7;
+        font-size: 12px;
+        position: absolute;
+        bottom: 0px;
+        width: 100%;
+    }
+    
+    #footer-pesquisa a{
+        text-decoration: none;
+    }
 }
 /*--------------------PESQUISA-------------------*/
 
@@ -375,10 +338,49 @@
     text-align: center;
     padding: 0px !important;
 }
+
+@media(min-width:991px){
+    .content-ver-conta{
+        height: 100vh !important;
+    }
+
+    .content-ver-conta p{
+         margin: 0 auto;
+         width: 50%;
+         text-align: center;
+         padding: 0px !important;
+    }
+
+    .container-btn-voltar-ver-conta{
+        padding-left: 22%;
+    }
+
+    #footer-verConta{
+        background-color: #000000d7;
+        font-size: 12px;
+        width: 100%;
+    }
+    
+    #footer-verConta a{
+        text-decoration: none;
+    }
+}
+
+@media(min-width:1800px){
+    .content-ver-conta{
+        padding-top: 100px;
+        height: 80vh !important;
+    }
+}
 /*------------------VER CONTA---------------*/
 
 
 
 
-
-
+/*---------------------EDITAR---------------------*/
+@media(min-width:991px){
+    .content-editar{
+        height: 80vh;
+    }
+}
+/*---------------------EDITAR---------------------*/
