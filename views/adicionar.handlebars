@@ -25,7 +25,7 @@
        <input type="hidden" value="{{dadosUser.id}}" name="userId">
      
        <input type="text" name="nome" class="form-control mb-3 w-75 mx-auto" required placeholder="Nome da conta">
-       <input type="text" name="valor" inputmode="numeric" class="form-control mb-3 w-75 mx-auto" required placeholder="Valor da conta" onkeypress="return apenasNumeros(event)" oninput="formatarValor(this)">
+       <input type="text" name="valor" class="form-control mb-3 w-75 mx-auto" required placeholder="Valor da conta" onkeypress="return apenasNumeros(event)" oninput="formatarValor(this)">
        <select name="parcela" class="form-control mb-3 w-75 mx-auto">
           <option value="1">Á vista</option>
           <option value="2">2x</option>
