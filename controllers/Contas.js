@@ -7,7 +7,7 @@ const cron = require('node-cron')
 
 require('dotenv').config()
 
-const { Op, where } = require('sequelize');
+const { Op } = require('sequelize');
 
 
 
