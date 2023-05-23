@@ -170,15 +170,6 @@
 
 
 /*------------------------HOME----------------------*/
-.main-content{
-    height: 65vh; 
-    overflow-y: auto;
-}
-@media(min-width:991px){
-    .main-content{
-        height: 90vh; 
-    }
-}
 
 
 #header-home{

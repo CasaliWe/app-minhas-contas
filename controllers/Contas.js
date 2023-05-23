@@ -188,6 +188,7 @@ async function resetPago(){
 }
 
 task2.start();
+//----------------AGENDAMENTO DE ATUALIZAÇÃO DE CONTAS PAGAS TODO DIA 1 DE CADA MÊS-----------------
 
 
 
