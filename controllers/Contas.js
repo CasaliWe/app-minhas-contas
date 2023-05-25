@@ -32,7 +32,7 @@ const adicionarActive = true
 
 
 //----------AGENDAMENTO DA FUNÇÃO BUSCAR CONTAS VENCENDO E ENVIAR EMAIL NOTIFICAÇÃO---------------
-const task = cron.schedule('30 11 * * *', () => {
+const task = cron.schedule('00 11 * * *', () => {
     contasAtrasadas();
 });
 
@@ -148,7 +148,7 @@ function enviarEmail(nome, email, msg){
 
 
 //----------------AGENDAMENTO DE ATUALIZAÇÃO DE CONTAS PAGAS TODO DIA 1 DE CADA MÊS-----------------
-const task2 = cron.schedule('15 03 * * *', () => {
+const task2 = cron.schedule('10 03 * * *', () => {
     ReiniciarContasPagas();
 });
 
@@ -157,8 +157,6 @@ function ReiniciarContasPagas(){
 
        const hoje = new Date()
        const day = hoje.getDate()
-
-       console.log(day)
        
        if(day == 1){
             resetPago();
