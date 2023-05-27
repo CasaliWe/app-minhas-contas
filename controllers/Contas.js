@@ -28,6 +28,7 @@ const transporter = nodemailer.createTransport({
 
 const homeActive = true
 const adicionarActive = true
+var contaPagaPesquisa = ''
 
 
 
@@ -262,6 +263,7 @@ async function pegarDados(userId){
     });
 
     valorTotal = valorTotal.toFixed(2)
+    valorTotal = valorTotal.replace('.', ',')
 
 
     return {contasNaoPagas, temContasVencendo, temContasPagas, valorTotal, homeActive, dadosUser: dadosUser.get({plain: true})}
@@ -403,8 +405,23 @@ module.exports = class ContasControllers {
         //ADICIONA NOVA CONTA NO BANCO
         static async adicionarConta(req,res){
              const {userId, nome, valor, parcela, vencimento, lembrete} = req.body
-             const vencendo = 'não'
+             var vencendo = 'não'
              const pago = 'não'
+
+             //Lógica para verificar se a conta adicionada está atrasada
+             const dataAdicionada = new Date(vencimento)
+             const verificarDia = dataAdicionada.getDate() +1
+             const verificarMes = dataAdicionada.getMonth() +1
+
+             const dataAtual = new Date()
+             const diaHoje = dataAtual.getDate()
+             const mesHJ = dataAtual.getMonth() +1
+             
+             if(diaHoje > verificarDia && mesHJ >= verificarMes){
+                vencendo = 'sim'
+             }
+
+
                
              //FAZENDO O CALCULO DA PARCELA
              var valorParcela;
@@ -498,8 +515,8 @@ module.exports = class ContasControllers {
                 var stringg2 = parseFloat(contaOne.parcelaPaga)
                 var resFinall = stringg1 - stringg2
 
-                const valorRestante = resFinall * parseFloat(contaOne.valorParcela)
-
+                var valorRestante = resFinall * parseFloat(contaOne.valorParcela)
+                valorRestante = valorRestante.toFixed(2)
 
 
                 res.render('verConta', {contaOne, dadosUser, resFinal, valorRestante})
@@ -525,8 +542,22 @@ module.exports = class ContasControllers {
             //QUANDO A CONTA FOR PAGA TODAS AS PARCELAS, O BTN PAGO E EDITAR NÃO SERÁ MAIS MOSTRADO;
             if(parcelaPaga == contaaa.parcela){
                 await Contas.update({mostrarBtnPago: 0}, {where:{id: id}})
+            }else{
+                //Atualizando a data de vencimento, aumentando um mês      
+                var atualizarData = new Date(contaaa.dataOrdenar)
+                atualizarData.setMonth(atualizarData.getMonth() + 1); //NOVA DATA
+
+                const novoDia =  atualizarData.getDate() +1
+                const novoMes =  atualizarData.getMonth() +1
+                var novoAno =  atualizarData.getFullYear()   
+                novoAno = novoAno.toString().slice(-2)    
+
+                const novaDataFinalizada = `${novoDia}/${novoMes}/${novoAno}`
+                
+                await Contas.update({vencimento:novaDataFinalizada, dataOrdenar:atualizarData}, {where:{id: id}})
             }
 
+            
             await Contas.update({parcelaPaga,vencendo, pago}, {where:{id: id}})
             
 
@@ -839,8 +870,11 @@ module.exports = class ContasControllers {
             });
 
             valorTotal = valorTotal.toFixed(2)
+            valorTotal = valorTotal.replace('.', ',')
 
-            res.render('pesquisa', {nomeOuData: nomeConta, contasNaoPagas, temContasPagas, valorTotal, dadosUser})
+            contaPagaPesquisa = `Contas pagas com o nome: "${nomeConta}" este mês.`
+
+            res.render('pesquisa', {contaPagaPesquisa, nomeOuData: nomeConta, contasNaoPagas, temContasPagas, valorTotal, dadosUser})
           
         }
 
@@ -921,8 +955,11 @@ module.exports = class ContasControllers {
             });
 
             valorTotal = valorTotal.toFixed(2)
+            valorTotal = valorTotal.replace('.', ',')
 
-            res.render('pesquisa', {temContasPagas, nomeOuData: dataFormatada, contasNaoPagas, valorTotal, dadosUser})
+            contaPagaPesquisa = `Contas pagas na data: ${dataFormatada}`
+
+            res.render('pesquisa', {contaPagaPesquisa, temContasPagas, nomeOuData: dataFormatada, contasNaoPagas, valorTotal, dadosUser})
         }
 
         
