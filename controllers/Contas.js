@@ -901,7 +901,8 @@ module.exports = class ContasControllers {
                 var sub = dataa.getDate() 
                 dataFormatada = `${sub}/${mes}/${ano}`
             }else{
-                dataFormatada = `${dia}/${mes}/${ano}`
+                var subb = dataa.getDate() 
+                dataFormatada = `${subb}/${mes}/${ano}`
             }
             
             const dadosUser = await Users.findOne({raw:true, where:{id:id}})
