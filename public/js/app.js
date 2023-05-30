@@ -62,3 +62,14 @@ function mudarInputFiltro(){
   }
 
 }
+
+
+
+
+//VERIFICAR TAMANHO DA TELA
+function verficicarTela(){
+  if (window.innerWidth < 992) {
+     document.getElementById('tela').value = 'mobile'
+  }
+}
+verficicarTela();

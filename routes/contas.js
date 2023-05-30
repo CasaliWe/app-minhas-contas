@@ -85,7 +85,7 @@ router.post('/atualizarSenha', ContasControllers.atualizarSenha)
 //BUSCAR A PESQUISA DO FILTRO
 router.post('/pesquisar', ContasControllers.pesquisar)
 router.get('/pesquisaNome/:nome/:id', ContasControllers.exibirPesquisarNome)
-router.get('/pesquisaData/:data/:id', ContasControllers.exibirPesquisarData)
+router.get('/pesquisaData/:data/:id/:tela', ContasControllers.exibirPesquisarData)
 
 
 

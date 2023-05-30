@@ -826,12 +826,12 @@ module.exports = class ContasControllers {
 
         //PESQUISAR
         static async pesquisar(req,res){
-              const {tipoFiltro, id, nomeConta, dataConta} = req.body
+              const {tipoFiltro, id, tela, nomeConta, dataConta} = req.body
 
               if(tipoFiltro == 'nome'){
                     res.redirect(`/pesquisaNome/${nomeConta}/${id}`)
                 }else{
-                    res.redirect(`/pesquisaData/${dataConta}/${id}`)
+                    res.redirect(`/pesquisaData/${dataConta}/${id}/${tela}`)
               }
         }
         
@@ -883,6 +883,7 @@ module.exports = class ContasControllers {
         static async exibirPesquisarData(req,res){
             const dataConta = req.params.data
             const id = req.params.id
+            const tela = req.params.tela
 
 
             const ids = []
@@ -894,7 +895,14 @@ module.exports = class ContasControllers {
             const dia = dataa.getDate() +1
             const mes = dataa.getMonth() +1
             const ano = dataa.getFullYear()
-            const dataFormatada = `${dia}/${mes}/${ano}`
+            var dataFormatada;
+
+            if(tela == 'mobile'){
+                var sub = dataa.getDate() 
+                dataFormatada = `${sub}/${mes}/${ano}`
+            }else{
+                dataFormatada = `${dia}/${mes}/${ano}`
+            }
             
             const dadosUser = await Users.findOne({raw:true, where:{id:id}})
 
