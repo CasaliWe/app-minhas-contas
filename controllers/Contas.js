@@ -149,7 +149,7 @@ function enviarEmail(nome, email, msg){
 
 
 //----------------AGENDAMENTO DE ATUALIZAÇÃO DE CONTAS PAGAS TODO DIA 1 DE CADA MÊS-----------------
-const task2 = cron.schedule('10 03 * * *', () => {
+const task2 = cron.schedule('00 04 * * *', () => {
     ReiniciarContasPagas();
 });
 
@@ -159,7 +159,7 @@ function ReiniciarContasPagas(){
        const hoje = new Date()
        const day = hoje.getDate()
        
-       if(day == 1){
+       if(day == 6){
             resetPago();
        }
 
@@ -932,7 +932,7 @@ module.exports = class ContasControllers {
         
             allContasPagas.forEach((conta)=>{
                 var diaaa = conta.dataOrdenar.getDate() +1
-                var messs = conta.dataOrdenar.getMonth() +1 
+                var messs = conta.dataOrdenar.getMonth()
                 var anooo = conta.dataOrdenar.getFullYear()
 
                 if(diaaa == dia && messs == mes && anooo == ano){
