@@ -1,23 +1,19 @@
+//IMPORTS
 const express = require('express')
 const exphbs = require('express-handlebars')
-
 const nodemailer = require('nodemailer')
-
 const { Cookie } = require('express-session')
 const session = require('express-session')
 const FileStore = require('session-file-store')(session)
-
 const cron = require('node-cron')
-
 const conn = require('./db/conn')
-
 const contasRoutes = require('./routes/contas') 
-
 const Users = require('./models/Users') 
 const Contas = require('./models/Contas') 
+const cronsEmails = require('./helpers/crons')
+
 
 const app = express()
-
 app.use(
     express.urlencoded({
          extended: true
@@ -60,6 +56,7 @@ app.set('view engine', 'handlebars')
 app.use(express.static('public')) 
 
 
+//ROTAS
 app.use('/', contasRoutes) 
 
 
@@ -67,4 +64,3 @@ app.use('/', contasRoutes)
 conn.sync().then(()=>{
     app.listen(3000)
 }).catch((err) => console.log(err))
-//      {force:true}      ;
